@@ -1,0 +1,17 @@
+{
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    //     "source.fixAll.eslint": true,
+    "source.fixAll.format": true
+  },
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#2492c9",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#2492c999",
+    "titleBar.inactiveForeground": "#e7e7e799"
+  },
+  "peacock.color": "#2492c9",
+  "git.ignoreLimitWarning": true
+}
