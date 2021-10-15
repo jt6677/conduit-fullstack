@@ -32,7 +32,7 @@ function Tags() {
   //   }, [])
 
   return (
-    <div className="col-span-1 pl-1">
+    <div className="col-span-1 pl-4">
       <div className="sidebar">
         <p>Popular Tags</p>
         {loading ? (

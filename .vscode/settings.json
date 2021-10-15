@@ -10,7 +10,11 @@
     "titleBar.activeBackground": "#2492c9",
     "titleBar.activeForeground": "#e7e7e7",
     "titleBar.inactiveBackground": "#2492c999",
-    "titleBar.inactiveForeground": "#e7e7e799"
+    "titleBar.inactiveForeground": "#e7e7e799",
+    "editorGroup.border": "#43aadd",
+    "panel.border": "#43aadd",
+    "sash.hoverBorder": "#43aadd",
+    "sideBar.border": "#43aadd"
   },
   "peacock.color": "#2492c9",
   "git.ignoreLimitWarning": true

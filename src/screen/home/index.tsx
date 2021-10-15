@@ -9,7 +9,7 @@ import {
 import Banner from './Banner'
 import MainView from './MainView'
 import Tags from './Tags'
-// import { ArticlesProvider } from '../../context/articles'
+import { ArticlesProvider } from '../../context/articles'
 
 export default function Home(_: RouteProps): JSX.Element {
   return (
@@ -17,10 +17,10 @@ export default function Home(_: RouteProps): JSX.Element {
       <Banner />
       <div className="container max-w-4xl pl-4 pr-4 mx-auto ">
         <div className="grid grid-cols-4 ">
-          {/* <ArticlesProvider> */}
-          <MainView />
-          <Tags />
-          {/* </ArticlesProvider> */}
+          <ArticlesProvider>
+            <MainView />
+            <Tags />
+          </ArticlesProvider>
         </div>
       </div>
     </div>
