@@ -43,7 +43,6 @@ export default function ArticleList(): JSX.Element {
       dispatch({ type: ArticleListActionType.FETCH_ARTICLES_BEGIN })
       try {
         const payload = await loadArticles(selectedTab, page)
-        console.log(payload.data)
         if (!ignore) {
           dispatch({
             type: ArticleListActionType.FETCH_ARTICLES_SUCCESS,

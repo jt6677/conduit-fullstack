@@ -66,8 +66,8 @@ export function getFeedArticles(): Promise<AxiosResponse<Articles>> {
   return API.get<Articles>('/articles/feed?limit=10&offset=0')
 }
 
-export function getArticle(slug: string): Promise<AxiosResponse<Article>> {
-  return API.get<Article>(`/articles/${slug}`)
+export function getArticle(slug: string): Promise<AxiosResponse<IArticle>> {
+  return API.get<IArticle>(`/articles/${slug}`)
 }
 
 export function unfavoriteArticle(

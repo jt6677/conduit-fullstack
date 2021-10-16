@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { BrowserRouter as Router } from 'react-router-dom'
 // import {ReactQueryConfigProvider} from 'react-query'
-// import {AuthProvider} from './auth-context'
+import { AuthProvider } from '../context/auth'
 
 // const queryConfig = {
 //   queries: {
@@ -21,7 +21,7 @@ function AppProviders({ children }: AppProvidersProps) {
   return (
     // <ReactQueryConfigProvider config={queryConfig}>
     <Router>
-      {children}
+      <AuthProvider>{children}</AuthProvider>
       {/* <AuthProvider>{children}</AuthProvider> */}
     </Router>
     // </ReactQueryConfigProvider>

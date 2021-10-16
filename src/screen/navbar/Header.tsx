@@ -4,37 +4,44 @@ import {
   Link as RouterLink,
   useRouteMatch,
   LinkProps,
+  NavLink,
 } from 'react-router-dom'
 import useAuth from '../../context/auth'
 import { IUser } from '../../types'
 import { APP_NAME } from '../../utils'
-const NavLink = (props: LinkProps<any>) => (
-  // @ts-ignore
-  <Link getProps={isActive} {...props} />
-)
+// const NavLink = (props: LinkProps<any>) => (
+//   // @ts-ignore
+//   <RouterLink getProps={isActive} {...props} />
+// )
 const LoggedInView = ({ user: { username, image } }: { user: IUser }) => (
-  <ul className="nav navbar-nav pull-xs-right">
-    <li className="nav-item">
+  <ul className="flex float-right space-x-4 list-none ">
+    <li className="float-left">
       <NavLink to="/">Home</NavLink>
     </li>
 
-    <li className="nav-item">
+    <li className="float-left">
       <NavLink to="/editor">
         <i className="ion-compose" />
         &nbsp;New Post
       </NavLink>
     </li>
 
-    <li className="nav-item">
+    <li className="float-left">
       <NavLink to="/settings">
         <i className="ion-gear-a" />
         &nbsp;Settings
       </NavLink>
     </li>
 
-    <li className="nav-item">
+    <li className="float-left">
       <NavLink to={`/${username}`}>
-        {image && <img src={image} className="user-pic" alt={username} />}
+        {image && (
+          <img
+            src={image}
+            className="float-left w-6 h-6 mr-1 rounded-full"
+            alt={username}
+          />
+        )}
         {username}
       </NavLink>
     </li>
