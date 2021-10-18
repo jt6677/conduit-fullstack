@@ -1,26 +1,23 @@
 import React from 'react'
-import {
-  // BrowserRouter as Router,
-  // Route,
-  // Link,
-
-  RouteProps,
-} from 'react-router-dom'
+import { RouteProps } from 'react-router-dom'
 import Banner from './Banner'
-import MainView from './MainView'
-import Tags from './Tags'
-import { ArticlesProvider } from '../../context/articles'
-
+import ArticleList from '../../ArticleList'
+import TabList from '../../common/TabList'
+import { ITab, ITabType } from '../../reducers/articleList'
 export default function Home(_: RouteProps): JSX.Element {
+  const tabsData: Array<ITab> = [
+    { type: ITabType.FEED, label: 'Your Feed' },
+    { type: ITabType.ALL, label: 'Global Feed' },
+  ]
   return (
     <div>
       <Banner />
-      <div className="container max-w-4xl pl-4 pr-4 mx-auto ">
-        <div className="grid grid-cols-4 ">
-          <ArticlesProvider>
-            <MainView />
-            <Tags />
-          </ArticlesProvider>
+      <div className="container max-w-5xl pl-3 pr-3 mx-auto ">
+        <div className="relative col-span-3 ">
+          <div>
+            <TabList data={tabsData} />
+          </div>
+          <ArticleList />
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ import useAuth from '../../context/auth'
 import ListErrors from '../../common/ListErrors'
 import { IErrors } from '../../types'
 import { AuthActionType } from '../../reducers/auth'
+
 export default function Register(_: RouteProps) {
   const [form, setForm] = React.useState({
     username: '',
@@ -46,58 +47,130 @@ export default function Register(_: RouteProps) {
   if (user) {
     return <Redirect to="/" />
   }
-
   return (
-    <div className="container pl-4 pr-4 mt-6 ml-auto mr-auto">
-      {/* <div className="flex flex-wrap "> */}
-      <div className="grid grid-cols-4 ">
-        <div className="col-span-2 col-start-2 ">
-          <h1 className="mb-2 text-4xl font-medium text-center">Sign up</h1>
-          <p className="mb-4 text-center text-green-500">
-            <Link to="/login">Have an account?</Link>
-          </p>
-          {errors && <ListErrors errors={errors} />}
-          <form className="grid justify-items-center" onSubmit={handleSubmit}>
-            <fieldset className="mb-4 ">
-              <input
-                name="username"
-                className="block px-8 py-3 border border-gray-300 rounded"
-                type="text"
-                value={form.username}
-                placeholder="Your Name"
-                onChange={handleChange}
-              />
-            </fieldset>
-            <fieldset className="mb-4">
-              <input
-                name="email"
-                className="block px-8 py-3 border border-gray-300 rounded"
-                type="email"
-                value={form.email}
-                placeholder="Email"
-                onChange={handleChange}
-              />
-            </fieldset>
-            <fieldset className="mb-4">
-              <input
-                name="password"
-                className="block px-8 py-3 border border-gray-300 rounded"
-                type="password"
-                value={form.password}
-                placeholder="Password"
-                onChange={handleChange}
-              />
-            </fieldset>
-            <button
-              className="px-4 py-2 ml-40 text-lg font-medium text-white bg-green-500 rounded"
-              disabled={loading}
-            >
-              Sign Up
-            </button>
+    <div className="flex flex-col justify-start min-h-screen py-12 bg-gray-50 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        {/* <img
+          className="w-auto h-12 mx-auto"
+          src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
+          alt="Workflow"
+        /> */}
+        <h2 className="mt-2 text-3xl font-extrabold text-center text-indigo-700">
+          Sign up
+        </h2>
+        <p className="mt-2 text-sm text-center text-gray-600">
+          Or{' '}
+          <Link
+            to="/login"
+            className="font-medium text-indigo-600 hover:text-indigo-500"
+          >
+            sign in with your account
+          </Link>
+        </p>
+      </div>
+
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div>
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium text-gray-700"
+              >
+                User name
+              </label>
+              <div className="mt-1">
+                <input
+                  id="username"
+                  name="username"
+                  type="username"
+                  autoComplete="username"
+                  required
+                  value={form.username}
+                  onChange={handleChange}
+                  className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+            </div>
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Email address
+              </label>
+              <div className="mt-1">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={form.email}
+                  onChange={handleChange}
+                  className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Password
+              </label>
+              <div className="mt-1">
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  value={form.password}
+                  onChange={handleChange}
+                  className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <input
+                  id="remember-me"
+                  name="remember-me"
+                  type="checkbox"
+                  className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                />
+                <label
+                  htmlFor="remember-me"
+                  className="block ml-2 text-sm text-gray-900"
+                >
+                  Remember me
+                </label>
+              </div>
+
+              <div className="text-sm">
+                <a
+                  href="#"
+                  className="font-medium text-indigo-600 hover:text-indigo-500"
+                >
+                  Forgot your password?
+                </a>
+              </div>
+            </div>
+
+            <div>
+              <button
+                type="submit"
+                className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Sign in
+              </button>
+            </div>
           </form>
         </div>
       </div>
-      {/* </div> */}
     </div>
   )
 }

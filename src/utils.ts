@@ -1,4 +1,4 @@
-export const APP_NAME = 'conduit'
+export const APP_NAME = 'Go_Forward'
 export const ALT_IMAGE_URL =
   'https://static.productionready.io/images/smiley-cyrus.jpg'
 

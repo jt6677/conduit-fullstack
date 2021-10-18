@@ -1,11 +1,11 @@
 import React from 'react'
 import Header from './navbar/Header'
-// import Example from './navbar/header1'
 import Home from './home'
 import Login from './navbar/Login'
 import Register from './navbar/Register'
 import Settings from './navbar/Settings'
 import Editor from './editor/Editor'
+import Profile from './navbar/Profile'
 import { Switch, Route } from 'react-router-dom'
 import { getCurrentUser } from '../api/AuthAPI'
 import useAuth from '../context/auth'
@@ -58,8 +58,6 @@ function App() {
     <>
       <ArticlesProvider>
         <Header />
-        {/* <Example /> */}
-        {/* <Home /> */}
         <AppRoutes />
       </ArticlesProvider>
     </>
@@ -73,6 +71,8 @@ function AppRoutes() {
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
       <Route path="/settings" component={Settings} />
+      <Route path="/profiles/:username" component={Profile} />
+      <Route path="/editor/:slug" component={Editor} />
       <Route path="/editor" component={Editor} />
       <Route path="/article/:slug" component={Article} />
     </Switch>

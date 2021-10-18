@@ -1,28 +1,11 @@
 {
-  "article": {
-    "slug": "how-to-train-your-dragon",
-    "title": "How to train your dragon",
-    "description": "Ever wonder how?",
-    "body": "It takes a Jacobian",
-    "tagList": ["dragons", "training"],
-    "createdAt": "2016-02-18T03:22:56.637Z",
-    "updatedAt": "2016-02-18T03:48:35.824Z",
-    "favorited": false,
-    "favoritesCount": 0,
-    "author": {
-      "username": "jake",
-      "bio": "I work at statefarm",
-      "image": "https://i.stack.imgur.com/xHWG8.jpg",
-      "following": false
-    }
-  },
   "articles": {
     "articles": [
       {
         "slug": "how-to-train-your-dragon",
         "title": "How to train your dragon",
         "description": "Ever wonder how?",
-        "body": "It takes a Jacobian",
+        "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas mollis ex eu odio consequat, vitae laoreet sem mattis. Sed laoreet a eros eu suscipit. Nam sodales in turpis eu mollis. Morbi dapibus nulla sit amet ullamcorper mollis. Aliquam ullamcorper sem vitae lacus accumsan imperdiet. Cras magna magna, elementum sed cursus in, volutpat a dolor. Suspendisse potenti. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean et molestie mi. Maecenas interdum et erat nec sodales. ",
         "tagList": ["dragons", "training"],
         "createdAt": "2016-02-18T03:22:56.637Z",
         "updatedAt": "2016-02-18T03:48:35.824Z",
@@ -39,7 +22,7 @@
         "slug": "how-to-train-your",
         "title": "How to train your",
         "description": "So toothless",
-        "body": "It asssasd dragon",
+        "body": "Sed sagittis tellus purus, vel tincidunt dui hendrerit quis. Proin hendrerit in felis eu vulputate. Vestibulum eu ipsum sit amet arcu ultrices posuere. Nunc eget tempor ligula, ut vehicula urna. Nulla sagittis odio tempus, euismod quam in, sollicitudin dui. Nullam in bibendum diam. Duis sed diam faucibus, cursus lacus sed, imperdiet risus. Sed faucibus, mi sit amet vulputate lobortis, urna mauris imperdiet mi, et tempus nisi orci id ante. Cras quis purus eu dolor sagittis commodo in imperdiet augue. Quisque ultricies congue justo, vel imperdiet tellus volutpat ac. Suspendisse sem massa, blandit a nulla sed, placerat ultrices ligula. In id metus commodo, aliquam nibh non, commodo mauris. Nam vulputate, orci nec lobortis sodales, tellus ipsum tincidunt erat, eget dictum nisl lectus vitae justo. Nunc semper odio ut orci blandit tincidunt. ",
         "tagList": ["dragons", "training"],
         "createdAt": "2016-02-18T03:22:56.637Z",
         "updatedAt": "2016-02-18T03:48:35.824Z",
@@ -56,7 +39,7 @@
         "slug": "how-to-train-your-dragon-2",
         "title": "How to train your dragon 2",
         "description": "So toothless",
-        "body": "It a dragon",
+        "body": "Sed nisl lectus, aliquam eu mauris vel, ullamcorper porttitor orci. Ut eleifend metus et lorem pellentesque, a tempor arcu pharetra. Praesent in scelerisque ligula. Nunc massa ligula, efficitur id libero blandit, gravida sodales elit. Quisque at quam efficitur quam tempus pharetra sit amet eu lacus. Quisque et vehicula dui. Donec id eros lobortis, tempor neque sed, bibendum nulla. Nunc fermentum sit amet lacus nec vulputate. Aliquam pellentesque sollicitudin nisl, et interdum odio ullamcorper sit amet. Nulla eget nisi pharetra, placerat turpis vitae, fermentum nisl. Etiam vulputate risus vitae nulla iaculis faucibus. Maecenas id volutpat urna, a luctus magna. Vestibulum tincidunt felis id elit cursus porttitor. Etiam sem nisi, vulputate nec venenatis eget, hendrerit at tortor. ",
         "tagList": ["dragons", "training"],
         "createdAt": "2016-02-18T03:22:56.637Z",
         "updatedAt": "2016-02-18T03:48:35.824Z",
@@ -72,17 +55,11 @@
     ],
     "articlesCount": 3
   },
-  "profile": {
-    "username": "jake",
-    "bio": "I work at statefarm",
-    "image": "https://static.productionready.io/images/smiley-cyrus.jpg",
-    "following": false
-  },
   "users": {
     "user": {
-      "username": "asdasda",
-      "email": "sdasdasda@asd.com",
-      "password": "9EpVZauYzSYxzwH"
+      "username": "asasdasd",
+      "email": "cannotdcf@gmail.com",
+      "password": "qweqweqwe"
     }
   },
   "user": {

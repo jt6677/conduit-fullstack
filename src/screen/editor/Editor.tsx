@@ -1,5 +1,5 @@
 import React from 'react'
-import { useHistory, RouteProps } from 'react-router-dom'
+import { useHistory, RouteProps, useParams } from 'react-router-dom'
 import { editorReducer, initalState } from '../../reducers/editor'
 import { getArticle, updateArticle, createArticle } from '../../api/ArticlesAPI'
 import ListErrors from '../../common/ListErrors'
@@ -7,14 +7,14 @@ import { EditorActionType } from '../../reducers/editor'
 export default function Editor(_: RouteProps) {
   const [state, dispatch] = React.useReducer(editorReducer, initalState)
   let history = useHistory()
-  const slug = 'something'
+  let { slug } = useParams<{ slug: string }>()
   React.useEffect(() => {
     let ignore = false
 
     const fetchArticle = async () => {
       try {
         const payload = await getArticle(slug)
-        const { title, description, body, tagList } = payload.data.article
+        const { title, description, body, tagList } = payload.data
         if (!ignore) {
           dispatch({
             type: EditorActionType.SET_FORM,

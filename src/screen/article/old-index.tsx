@@ -1,6 +1,6 @@
 import React from 'react'
 import marked from 'marked'
-import { useParams, RouteProps, Link } from 'react-router-dom'
+import { useParams, RouteProps } from 'react-router-dom'
 import ArticleMeta from './ArticleMeta'
 import ArticleTags from '../../common/ArticleTags'
 import CommentContainer from './CommentContainer'
@@ -12,7 +12,6 @@ import {
 import { getArticleComments } from '../../api/CommentsAPI'
 import { getArticle } from '../../api/ArticlesAPI'
 import { IComment, IArticle } from '../../types'
-import { ALT_IMAGE_URL } from '../../utils'
 
 export default function Article(_: RouteProps): JSX.Element | null {
   const [{ article, comments, loading, error }, dispatch] = React.useReducer(
@@ -94,45 +93,33 @@ export default function Article(_: RouteProps): JSX.Element | null {
 
   return (
     article && (
-      <div className="grid h-auto grid-cols-4 pb-32 bg-gray-100 ">
-        <div className="col-span-2 col-start-2 mt-12">
-          <div className="overflow-hidden bg-white sm:rounded-lg sm:shadow">
-            <div className="px-4 py-5 bg-white border-b border-gray-200 sm:px-6 ">
-              <div className="grid grid-cols-6 gap-1 -mt-4 -ml-4 sm:flex-nowrap">
-                {/* avatar */}
-                <div className="flex items-center mt-4 ml-4 ">
-                  <div className="flex-shrink-0 float-right">
-                    <img
-                      className="w-12 h-12 rounded-full"
-                      src={article.author.image || ALT_IMAGE_URL}
-                      alt={article.author.username}
-                    />
-                  </div>
-                  <div className="ml-2">
-                    <h3 className="text-lg font-medium leading-6 text-gray-900">
-                      {article.author.username}
-                    </h3>
-                    <p className="text-sm text-gray-500">
-                      <Link
-                        to={`/profile/${article.author.username}`}
-                      >{`@${article.author.username}`}</Link>
-                    </p>
-                  </div>
-                </div>
-                {/* <h1 className="text-xl text-bold">xaasdasda!</h1> */}
-                {/* article Title  */}
-                <h1 className="flex items-center justify-center col-span-4 col-start-2 mt-4 ml-4 text-2xl font-semibold">
-                  {article.title}
-                </h1>
-              </div>
-            </div>
-            <div className="mt-2 opacity-25 sm:px-6 sm:pt-0">
-              <p>{article.description}</p>
-            </div>
-            <div className="mt-2 opacity-75 sm:p-6 sm:pt-0">
-              <p>{article.body}</p>
+      <div className="article-page">
+        <div className="banner">
+          <div className="container">
+            <h1>{article.title}</h1>
+            <ArticleMeta article={article} dispatch={dispatch} />
+          </div>
+        </div>
+
+        <div className="container page">
+          <div className="row article-content">
+            <div className="col-md-12">
+              <p dangerouslySetInnerHTML={convertToMarkdown(article.body)} />
+              <ArticleTags tagList={article.tagList} />
             </div>
           </div>
+
+          <hr />
+
+          <div className="article-actions">
+            <ArticleMeta article={article} dispatch={dispatch} />
+          </div>
+
+          <CommentContainer
+            comments={comments}
+            slug={slug}
+            dispatch={dispatch}
+          />
         </div>
       </div>
     )
