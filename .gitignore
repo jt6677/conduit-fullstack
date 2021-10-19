@@ -1,23 +1,75 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.a
+*.so
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
+# Folders
+_obj
+_test
+tmp
 
-# testing
-/coverage
+# Architecture specific extensions/prefixes
+*.[568vq]
+[568vq].out
 
-# production
-/build
+*.cgo1.go
+*.cgo2.c
+_cgo_defun.c
+_cgo_gotypes.go
+_cgo_export.*
 
-# misc
+_testmain.go
+
+*.exe
+*.test
+*.prof
+
+# WebStorm
+*.iml
+
+# Sublime Text
+.sublime-workspace
+
+# Directory-based project format:
+.idea/
+.idea/workspace.xml
+**/.idea/workspace.xml
+
+# mac hidden files
 .DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+#other
+builds/
+tmp/
+node_modules/
+bower_components/
+.tmp
+.sass-cache
+builds/**/images/*
+*.ogg
+*.mp3
+*.mp4
+#*.png
+#*.jpeg
+
+# security / ssl
+*.pem
+*.xxjson
+
+# Anything under exp folder
+# **/exp/*
+# Anything under a tmp folder
+**/tmp/*
+# Anything under photogallary folder
+**/photogallary/*
+# Don't include our binary
+lenslocked.com
+images/**
+.config
+*.config
+notes/**
+.vscode/**
+
+*.vscode/
+*.config
+*config

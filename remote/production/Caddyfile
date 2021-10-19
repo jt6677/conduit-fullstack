@@ -1,0 +1,17 @@
+# Set the email address that should be used to contact you if there is a problem with 
+# your TLS certificates.
+{
+  email jtforward2020@gmail.com
+}
+
+# Remove the http:// prefix from your site address.
+
+jtforward.ga/api/* {
+  reverse_proxy localhost:8080
+ }
+
+jtforward.ga {
+  root * /etc/www/frontend/build
+  try_files {path} /index.html
+  file_server
+}
