@@ -95,7 +95,7 @@ const LoggedInView = ({
                   <a
                     className={classNames(
                       active ? 'bg-gray-100' : '',
-                      'block px-4 py-2 text-sm text-gray-700'
+                      'block px-4 py-2 text-sm text-gray-700 cursor-pointer'
                     )}
                     onClick={handleSignout}
                   >
@@ -146,7 +146,7 @@ const LoggedInMenuView = ({
         </NavLink>
         <a
           // to="/signout"
-          className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100 sm:px-6"
+          className="block px-4 py-2 text-base font-medium text-gray-500 cursor-pointer hover:text-gray-800 hover:bg-gray-100 sm:px-6"
           onClick={handleSignout}
         >
           Sign out

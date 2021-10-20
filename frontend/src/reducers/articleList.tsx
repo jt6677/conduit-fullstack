@@ -13,7 +13,8 @@ export type ArticleListAction =
   | { type: ArticleListActionType.FETCH_ARTICLES_BEGIN }
   | {
       type: ArticleListActionType.FETCH_ARTICLES_SUCCESS
-      payload: { articles: Array<IArticle>; articlesCount: number }
+      payload: { articles: Array<IArticle> }
+      // payload: { articles: Array<IArticle>; articlesCount: number }
     }
   | { type: ArticleListActionType.FETCH_ARTICLES_ERROR; error: string }
   | {
@@ -75,7 +76,7 @@ export function articlesReducer(
         ...state,
         loading: false,
         articles: action.payload.articles,
-        articlesCount: action.payload.articlesCount,
+        // articlesCount: action.payload.articlesCount,
       }
     case ArticleListActionType.FETCH_ARTICLES_ERROR:
       return {

@@ -67,14 +67,7 @@ export default function ArticlePreview({
         </div>
         <div className="flex items-center mt-6">
           <div className="flex-shrink-0">
-            {/* <Link to={`/${author.username}`}>
-              <img
-                className="inline-block w-8 h-8 align-middle rounded-full"
-                src={author.image || ALT_IMAGE_URL}
-                alt={author.username}
-              />
-            </Link> */}
-            <Link to={`/${article.author.username}`}>
+            <Link to={`/profiles/${article.author.username}`}>
               <span className="sr-only">{article.author.username}</span>
               <img
                 className="w-10 h-10 rounded-full"
@@ -86,15 +79,15 @@ export default function ArticlePreview({
           <div className="ml-3">
             <p className="text-sm font-medium text-gray-900">
               <Link
-                to={`/${article.author.username}`}
+                to={`/profiles/${article.author.username}`}
                 className="hover:underline"
               >
                 {article.author.username}
               </Link>
             </p>
             <div className="flex space-x-1 text-sm text-gray-500">
-              <time dateTime={`${article.createdAt}`}>
-                {`${article.createdAt}`.substring(0, 10)}
+              <time dateTime={`${article.created_at}`}>
+                {`${article.created_at}`.substring(0, 10)}
               </time>
               {/* <span aria-hidden="true">&middot;</span> */}
               {/* <span>{post.readingTime} read</span> */}

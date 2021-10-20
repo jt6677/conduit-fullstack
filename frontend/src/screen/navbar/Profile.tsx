@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom'
 import { IProfile } from '../../types'
 import useAuth from '../../context/auth'
-import { ALT_IMAGE_URL } from '../../utils/utils'
+import { ALT_IMAGE_URL, ALT_BIO } from '../../utils/utils'
 import {
   unfollowProfile,
   followProfile,
@@ -35,7 +35,8 @@ export default function Profile(_: RouteProps): JSX.Element {
         const payload = await getProfile(username)
         // console.log(payload)
         if (!ignore) {
-          setProfile(payload.data.profile)
+          console.log(payload.data.image)
+          setProfile(payload.data)
         }
       } catch (error) {
         console.log(error)
@@ -65,76 +66,47 @@ export default function Profile(_: RouteProps): JSX.Element {
   //    setLoading(false)
   //  }
 
-  const isUser = profile && user && profile.username === user.username
-  if (profile) {
-    return (
-      <div className="grid h-auto grid-cols-4 pb-32 bg-gray-100 ">
-        <div className="col-span-2 col-start-2 mt-12">
-          <div className="overflow-hidden bg-white sm:rounded-lg sm:shadow">
-            <div className="px-4 py-5 bg-white border-b border-gray-200 sm:px-6">
-              <div className="flex flex-wrap items-center justify-between -mt-4 -ml-4 sm:flex-nowrap">
-                <div className="mt-4 ml-4">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0">
-                      <img
-                        className="w-12 h-12 rounded-full"
-                        src={profile.image || ALT_IMAGE_URL}
-                        alt={profile.username}
-                      />
-                    </div>
-                    <div className="ml-4">
-                      <h3 className="text-lg font-medium leading-6 text-gray-900">
-                        {username}
-                      </h3>
-                      <p className="text-sm text-gray-500">
-                        <Link
-                          to={`/profile/${profile.username}`}
-                        >{`@${profile.username}`}</Link>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="px-4 pb-5 opacity-25 sm:p-6 sm:pt-0">
-              <p>{profile.bio}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  } else {
-    return (
-      <div className="grid h-auto grid-cols-4 pb-32 bg-gray-100 ">
-        <div className="col-span-2 col-start-2 mt-12">
-          <div className="overflow-hidden bg-white sm:rounded-lg sm:shadow">
-            <div className="px-4 py-5 bg-white border-b border-gray-200 sm:px-6">
-              <div className="flex flex-wrap items-center justify-between -mt-4 -ml-4 sm:flex-nowrap">
-                <div className="mt-4 ml-4">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0">
-                      <img
-                        className="w-12 h-12 rounded-full"
-                        src={ALT_IMAGE_URL}
-                        alt={'default'}
-                      />
-                    </div>
-                    <div className="ml-4">
-                      <h3 className="text-lg font-medium leading-6 text-gray-900">
-                        No User Name Provided
-                      </h3>
-                      <p className="text-sm text-gray-500">
-                        <span>No profile loaded</span>
-                        {/* <Link to="#">@tom_cook</Link> */}
-                      </p>
+  // const isUser = profile && user && profile.username === user.username
+  return (
+    <div className="grid h-auto grid-cols-4 pb-32 bg-gray-100 ">
+      <div className="col-span-2 col-start-2 mt-12">
+        <div className="px-4 py-5 overflow-hidden bg-white sm:rounded-lg sm:shadow ">
+          {profile ? (
+            <>
+              <div className="pb-2 bg-white border-b border-gray-200 sm:px-6">
+                <div className="flex flex-wrap items-center justify-between -mt-4 -ml-4 sm:flex-nowrap">
+                  <div className="mt-4 ml-4">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <img
+                          className="w-12 h-12 rounded-full"
+                          src={profile.image || ALT_IMAGE_URL}
+                          alt={profile.username}
+                        />
+                      </div>
+                      <div className="ml-4">
+                        <h3 className="text-lg font-medium leading-6 text-gray-900">
+                          {username}
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          <Link
+                            to={`/profiles/${profile.username}`}
+                          >{`@${profile.username}`}</Link>
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
+              <div className="px-2 mt-2 opacity-50 sm:px-4 sm:pt-0">
+                <p>{profile.bio || ALT_BIO}</p>
+              </div>
+            </>
+          ) : (
+            <div>No profile found</div>
+          )}
         </div>
       </div>
-    )
-  }
+    </div>
+  )
 }

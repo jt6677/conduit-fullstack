@@ -15,9 +15,9 @@ const (
 )
 
 type UserSession struct {
-	SessionID int    `json:"session_id"` // Unique identifier.
+	SessionId int    `json:"session_id"` // Unique identifier.
 	Username  string `json:"username"`
-	UserID    int    `json:"user_id"`
+	UserId    int    `json:"user_id"`
 }
 
 // ctxKey represents the type of value for the context key.

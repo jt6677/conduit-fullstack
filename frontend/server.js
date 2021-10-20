@@ -47,7 +47,7 @@ server.post('/users/login', (req, res) => {
 })
 
 // /articles/how-to-train-your-dragon
-server.get('/articles/:articleSlug', (req, res) => {
+server.get('/article/:articleSlug', (req, res) => {
   const article = articlesList.filter(
     (article) => article.slug === req.params.articleSlug
   )

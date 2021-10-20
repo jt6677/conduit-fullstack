@@ -29,7 +29,7 @@ function omitSlug(article: {
 
 export function getArticles(page: number) {
   // return API.get<Articles>(`/articles?${limit(10, page)}`)
-  return API.get<Articles>(`/articles`)
+  return API.get<IArticle[]>(`/articles/all`)
 }
 
 export function getArticlesByAuthor(username: string, page: number) {
@@ -67,7 +67,7 @@ export function getFeedArticles(): Promise<AxiosResponse<Articles>> {
 }
 
 export function getArticle(slug: string): Promise<AxiosResponse<IArticle>> {
-  return API.get<IArticle>(`/articles/${slug}`)
+  return API.get<IArticle>(`/article/${slug}`)
 }
 
 export function unfavoriteArticle(
@@ -87,11 +87,11 @@ export function updateArticle(article: {
   })
 }
 
-export function createArticle(article: {
-  title: string
-  description: string
-  body: string
-  tagList?: string[]
-}): Promise<AxiosResponse<Article>> {
-  return API.post<Article>('/articles', { article })
-}
+// export function createArticle({
+//   title: string
+//   description: string
+//   body: string
+//   tagList?: string[]
+// }): Promise<AxiosResponse<IArticle>> {
+//   return API.post<IArticle>('/articles', { article })
+// }

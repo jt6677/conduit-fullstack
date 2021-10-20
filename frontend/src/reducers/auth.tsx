@@ -11,7 +11,7 @@ export type AuthAction =
     }
   | {
       type: AuthActionType.LOAD_USER
-      user: any
+      user: IUser
     }
   | { type: AuthActionType.LOGOUT }
 

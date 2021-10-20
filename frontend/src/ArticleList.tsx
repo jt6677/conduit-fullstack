@@ -10,13 +10,14 @@ import {
 } from './api/ArticlesAPI'
 import useArticles from './context/articles'
 import { ITab, ITabType, ArticleListActionType } from './reducers/articleList'
+import { useFetch } from './context/FetchContext'
+import { IArticle } from './types'
 
 const loadArticles = (tab: ITab, page = 0) => {
   switch (tab.type) {
     case ITabType.FEED:
       return getFeedArticles()
     case ITabType.ALL:
-      // console.log('getArticles')
       return getArticles(page)
     case ITabType.TAG:
       return getArticlesByTag(tab.label, page)
@@ -35,35 +36,74 @@ const loadArticles = (tab: ITab, page = 0) => {
 // }
 
 export default function ArticleList() {
+  const authClient = useFetch()
   const {
-    state: { articles, loading, error, articlesCount, selectedTab, page },
+    state: { loading, error, articlesCount, selectedTab, page },
+    // state: { articles, loading, error, articlesCount, selectedTab, page },
     dispatch,
   } = useArticles()
-
+  const [articles, setArticles] = React.useState<Array<IArticle>>()
   React.useEffect(() => {
     let ignore = false
     async function fetchArticles() {
-      dispatch({ type: ArticleListActionType.FETCH_ARTICLES_BEGIN })
       try {
-        const payload = await loadArticles(selectedTab, page)
-        if (!ignore) {
-          dispatch({
-            type: ArticleListActionType.FETCH_ARTICLES_SUCCESS,
-            payload: payload.data,
+        let data
+        if (selectedTab.type === ITabType.ALL) {
+          data = await authClient(`articles/all`, {
+            method: 'GET',
           })
+          if (data) {
+            //@ts-ignore
+            setArticles(data)
+          }
         }
-      } catch (err) {
-        if (!ignore) {
-          dispatch({
-            type: ArticleListActionType.FETCH_ARTICLES_ERROR,
-            error: `${err}`,
+        if (selectedTab.type === ITabType.FEED) {
+          data = await authClient(`articles/myfeed`, {
+            method: 'GET',
           })
+          //@ts-ignore
+          console.log('asdas', data)
+          if (data) {
+            //@ts-ignore
+            setArticles(data)
+          } else {
+            //@ts-ignore
+            setArticles(null)
+          }
         }
+
+        // //@ts-ignore
+        // setArticles(data)
+      } catch (error) {
+        console.log(error)
       }
     }
-    fetchArticles().catch((err) => {
-      console.log(err)
-    })
+    // async function fetchArticles() {
+    //   dispatch({ type: ArticleListActionType.FETCH_ARTICLES_BEGIN })
+    //   try {
+    //     const payload = await loadArticles(selectedTab, page)
+    //     // console.log(payload.data)
+    //     if (!ignore) {
+    //       dispatch({
+    //         type: ArticleListActionType.FETCH_ARTICLES_SUCCESS,
+    //         //@ts-ignore
+    //         payload: payload.data,
+    //       })
+    //     }
+    //   } catch (err) {
+    //     if (!ignore) {
+    //       dispatch({
+    //         type: ArticleListActionType.FETCH_ARTICLES_ERROR,
+    //         error: `${err}`,
+    //       })
+    //     }
+    //   }
+    // }
+    // fetchArticles().catch((err) => {
+    //   console.log(err)
+    // })
+    fetchArticles()
+
     return () => {
       ignore = true
     }

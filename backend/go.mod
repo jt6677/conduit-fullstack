@@ -10,6 +10,7 @@ require (
 	github.com/google/go-cmp v0.5.2 // indirect
 	github.com/gorilla/mux v1.6.2
 	github.com/gorilla/sessions v1.2.1
+	github.com/gosimple/slug v1.11.0
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/lib/pq v1.8.0
@@ -29,4 +30,5 @@ require (
 	github.com/felixge/httpsnoop v1.0.1 // indirect
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/securecookie v1.1.1 // indirect
+	github.com/gosimple/unidecode v1.0.0 // indirect
 )

@@ -1,9 +1,9 @@
 import React from 'react'
 import { useHistory, Link, RouteProps, Redirect } from 'react-router-dom'
-import { login } from '../../api/AuthAPI'
+// import { login } from '../../api/AuthAPI'
 import ListErrors from '../../common/ListErrors'
 import useAuth from '../../context/auth'
-import { IErrors } from '../../types'
+import { IComment, IErrors } from '../../types'
 import { AuthActionType } from '../../reducers/auth'
 import { useFetch } from '../../context/FetchContext'
 
@@ -29,7 +29,7 @@ export default function Login(_: RouteProps) {
         method: 'POST',
         data: data,
       })
-
+      //@ts-ignore
       dispatch({ type: AuthActionType.LOAD_USER, user })
       history.push('/')
     } catch (error) {

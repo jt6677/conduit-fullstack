@@ -1,13 +1,17 @@
 import React from 'react'
 import { useHistory, RouteProps, useParams } from 'react-router-dom'
 import { editorReducer, initalState } from '../../reducers/editor'
-import { getArticle, updateArticle, createArticle } from '../../api/ArticlesAPI'
+import { getArticle, updateArticle } from '../../api/ArticlesAPI'
 import ListErrors from '../../common/ListErrors'
 import { EditorActionType } from '../../reducers/editor'
+import { useFetch } from '../../context/FetchContext'
+
 export default function Editor(_: RouteProps) {
   const [state, dispatch] = React.useReducer(editorReducer, initalState)
   let history = useHistory()
   let { slug } = useParams<{ slug: string }>()
+  const authClient = useFetch()
+
   React.useEffect(() => {
     let ignore = false
 
@@ -64,14 +68,19 @@ export default function Editor(_: RouteProps) {
     event.preventDefault()
     try {
       const { title, description, body } = state.form
-      const article = { title, description, body, tagList: state.tagList }
+      const article = { title, description, body }
+      // const article = { title, description, body, tagList: state.tagList }
       let payload
       if (slug) {
         payload = await updateArticle({ slug, ...article })
       } else {
-        payload = await createArticle(article)
+        payload = await authClient(`articles`, {
+          method: 'POST',
+          data: { ...article },
+        })
+        //@ts-ignore
+        history.push(`/article/${payload}`)
       }
-      history.push(`/article/${payload.data.article.slug}`)
     } catch (error) {
       console.log(error)
       // if (error.status === 422) {

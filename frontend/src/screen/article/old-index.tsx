@@ -56,7 +56,6 @@ export default function Article(_: RouteProps): JSX.Element | null {
           getArticle(slug),
           getArticleComments(slug),
         ])
-        console.log(articlePayload.data)
 
         if (!ignore) {
           dispatch({

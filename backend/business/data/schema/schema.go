@@ -33,10 +33,29 @@ CREATE TABLE users (
 	username      TEXT UNIQUE NOT NULL,
 	email         TEXT UNIQUE NOT NULL,
 	password_hash TEXT NOT NULL,
-	date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	date_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
+	bio           TEXT,
+	image         TEXT,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (user_id)
+);`,
+	},
+	{
+		Version:     2,
+		Description: "Add articles",
+		Script: `
+CREATE TABLE articles (
+	article_id		serial NOT NULL,
+	author_id		INTEGER NOT NULL,
+	slug			TEXT UNIQUE NOT NULL,
+	title			TEXT UNIQUE NOT NULL,
+	description		TEXT NOT NULL,
+	body			TEXT,
+	created_at		TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	updated_at		TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      favorites_count	INTEGER NOT NULL DEFAULT 0,
+	PRIMARY KEY (article_id),
+	FOREIGN KEY (author_id) REFERENCES users(user_id) ON DELETE CASCADE
 );`,
 	},
 }

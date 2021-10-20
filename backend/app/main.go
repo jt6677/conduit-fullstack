@@ -108,20 +108,29 @@ func run(log *log.Logger) error {
 		return errors.Wrap(err, "connecting to db")
 	}
 
+	// // =========================================================================
+
 	err = schema.Migrate(db)
 	if err != nil {
 		return errors.Wrap(err, "miragating db")
 	}
+
+	// // =========================================================================
+
 	// err = schema.Seed(db)
 	// if err != nil {
 	// 	return errors.Wrap(err, "seeding to db")
 	// }
 	// fmt.Println("seeding finished")
-	// err = schema.DeleteAll(db)
+
+	// // =========================================================================
+	// err = schema.DropAll(db)
 	// if err != nil {
 	// 	return errors.Wrap(err, "delete datat in all tables")
 	// }
 	// fmt.Println("deleting finished")
+	// // =========================================================================
+
 	defer func() {
 		log.Printf("main: Database Stopping : %s", cfg.DB.Host)
 		db.Close()

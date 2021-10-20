@@ -11,8 +11,8 @@ export interface IArticle {
   description: string
   body: string
   tagList: string[]
-  createdAt: Date
-  updatedAt: Date
+  created_at: string
+  updated_at: string
   favorited: boolean
   favoritesCount: number
   author: IProfile

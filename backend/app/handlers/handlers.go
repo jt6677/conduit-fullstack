@@ -7,8 +7,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	"github.com/jt6677/conduit-fullstack/business/auth"
-	"github.com/jt6677/conduit-fullstack/business/data/fileMange"
-	"github.com/jt6677/conduit-fullstack/business/data/session"
+	"github.com/jt6677/conduit-fullstack/business/data/articles"
 	"github.com/jt6677/conduit-fullstack/business/data/user"
 	"github.com/jt6677/conduit-fullstack/business/mid"
 	"github.com/jt6677/conduit-fullstack/foundation/web"
@@ -42,25 +41,18 @@ func API(build string, maxMultipartMem int, shutdown chan os.Signal, db *sqlx.DB
 	app.Handle(http.MethodPost, "/api/signup", ug.signup)
 	app.Handle(http.MethodPost, "/api/signin", ug.signin)
 	app.Handle(http.MethodGet, "/api/signout", ug.signout, mid.Authenticate(a))
+	app.Handle(http.MethodGet, "/api/profiles/{username:[a-zA-Z0-9]+}", ug.profile)
 
 	// =========================================================================
 	//Register session endpoints.
-	ss := sessionGroup{
-		session: session.New(log, db),
-		auth:    a,
+	ag := articlesGroup{
+		articles: articles.New(log, db),
+		auth:     a,
 	}
-	app.Handle(http.MethodPost, "/api/recordsession", ss.recordSession, mid.Authenticate(a))
-	app.Handle(http.MethodPost, "/api/dailysession/{id:[0-9]+}", ss.querySessionByUserIDandDateID, mid.Authenticate(a))
+	app.Handle(http.MethodPost, "/api/articles", ag.insertArticle, mid.Authenticate(a))
+	app.Handle(http.MethodGet, "/api/article/{slug:[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$}", ag.queryArticleWithSlug, mid.Authenticate(a))
+	app.Handle(http.MethodGet, "/api/articles/all", ag.queryArticles)
+	app.Handle(http.MethodGet, "/api/articles/myfeed", ag.queryArticlesByUser, mid.Authenticate(a))
 
-	// =========================================================================
-	//Register fileMange endpoints.
-	fm := fileMangeGroup{
-		fileMange: fileMange.New(log, &maxMultipartMem),
-		auth:      a,
-	}
-	uploadedFilePath := "./uploadedfiles"
-	fileHandler := http.FileServer(http.Dir(uploadedFilePath))
-	app.FileServer("/api/files/", "/api/files/", fileHandler)
-	app.Handle(http.MethodPost, "/api/upload", fm.handleUpload)
 	return app
 }

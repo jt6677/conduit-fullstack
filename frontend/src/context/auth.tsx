@@ -28,7 +28,10 @@ export function AuthProvider(props: React.PropsWithChildren<any>): JSX.Element {
     async function fetchUser() {
       try {
         const payload = await GetUser()
-        console.log(payload)
+        // console.log(payload)
+        // session_id: 0
+        // user_id: 5
+        // username: 'qwe1'
         dispatch({ type: AuthActionType.LOAD_USER, user: payload.data })
       } catch (err) {
         dispatch({ type: AuthActionType.LOGOUT })

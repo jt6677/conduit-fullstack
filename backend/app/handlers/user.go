@@ -18,8 +18,8 @@ type userGroup struct {
 }
 
 func (ug userGroup) signup(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-	// ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "handlers.user.update")
-	// defer span.End()
+	ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "handlers.user.update")
+	defer span.End()
 
 	v, ok := ctx.Value(web.KeyValues).(*web.Values)
 	if !ok {
@@ -57,7 +57,7 @@ func (ug userGroup) signin(ctx context.Context, w http.ResponseWriter, r *http.R
 		return web.NewShutdownError("web value missing from context")
 	}
 
-	var nu user.Info
+	var nu user.UserInfo
 	if err := web.Decode(r, &nu); err != nil {
 		return errors.Wrap(err, "")
 	}
@@ -80,10 +80,21 @@ func (ug userGroup) signin(ctx context.Context, w http.ResponseWriter, r *http.R
 //isLogin pulls UserSession out of ctx and type asert it
 //or response with nil
 func (ug userGroup) isLogin(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+	ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "handlers.user.update")
+	defer span.End()
+	v, ok := ctx.Value(web.KeyValues).(*web.Values)
+	if !ok {
+		return web.NewShutdownError("web value missing from context")
+	}
 
 	if temp := ctx.Value(auth.UserValues); temp != nil {
 		if usr, ok := temp.(*auth.UserSession); ok {
-			return web.Respond(ctx, w, usr, http.StatusAccepted)
+			trustedUserInfo, err := ug.user.QueryById(ctx, v.TraceID, usr.UserId)
+			if err != nil {
+				return errors.Wrapf(err, "Query User By Id")
+			}
+
+			return web.Respond(ctx, w, trustedUserInfo, http.StatusAccepted)
 		}
 	}
 	return web.Respond(ctx, w, nil, http.StatusUnauthorized)
@@ -115,4 +126,24 @@ func (ug userGroup) signout(ctx context.Context, w http.ResponseWriter, r *http.
 	http.SetCookie(w, &http.Cookie{Name: "session", MaxAge: -1})
 	// http.SetCookie(w, &http.Cookie{Name: "_gorilla_csrf", MaxAge: -1})
 	return web.Respond(ctx, w, "Signout Successful", http.StatusCreated)
+}
+
+//profile returns user profile with name coming from ulr params
+func (ug userGroup) profile(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+	ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "handlers.article.QueryArticleByID")
+	defer span.End()
+
+	v, ok := ctx.Value(web.KeyValues).(*web.Values)
+	if !ok {
+		return web.NewShutdownError("web value missing from context")
+	}
+	vars := web.Params(r)
+	username := vars["username"]
+	fmt.Println(username)
+	trustedUserInfo, err := ug.user.QueryByUsername(ctx, v.TraceID, username)
+	if err != nil {
+		return errors.Wrapf(err, "Query User By Username")
+	}
+
+	return web.Respond(ctx, w, trustedUserInfo, http.StatusOK)
 }

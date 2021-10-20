@@ -1,5 +1,5 @@
 import React from 'react'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 export type AuthClientType = (
   endpoint: string,
   { data, files, customHeaders, ...customConfig }?: any

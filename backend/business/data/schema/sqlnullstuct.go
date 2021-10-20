@@ -1,4 +1,4 @@
-package session
+package schema
 
 import (
 	"database/sql"
@@ -6,15 +6,6 @@ import (
 	"fmt"
 	"time"
 )
-
-//SessionInfo struct
-type SessionInfo struct {
-	ID       int      `db:"session_id" json:"id"`
-	UserID   int      `db:"user_id" json:"user_id" `
-	DateID   int      `db:"date_id" json:"date_id" `
-	Started  NullTime `db:"started,omitempty" json:"started,omitempty"`
-	Finished NullTime `db:"finished,omitempty" json:"finished,omitempty"`
-}
 
 // NullInt64 is an alias for sql.NullInt64 data type
 type NullInt32 struct {

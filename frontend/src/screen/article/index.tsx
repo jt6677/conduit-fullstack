@@ -57,7 +57,6 @@ export default function Article(_: RouteProps): JSX.Element | null {
           getArticle(slug),
           getArticleComments(slug),
         ])
-        console.log(articlePayload.data)
 
         if (!ignore) {
           dispatch({
@@ -87,7 +86,6 @@ export default function Article(_: RouteProps): JSX.Element | null {
       ignore = true
     }
   }, [dispatch, slug])
-  console.log(article)
   const convertToMarkdown = (text: string) => ({
     __html: marked(text, { sanitize: true }),
   })
@@ -114,7 +112,7 @@ export default function Article(_: RouteProps): JSX.Element | null {
                     </h3>
                     <p className="text-sm text-gray-500">
                       <Link
-                        to={`/profile/${article.author.username}`}
+                        to={`/profiles/${article.author.username}`}
                       >{`@${article.author.username}`}</Link>
                     </p>
                   </div>
