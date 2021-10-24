@@ -1,19 +1,19 @@
 import { IUser } from '../types'
 
 export enum AuthActionType {
-  LOGIN = 'LOGIN',
-  LOGOUT = 'LOGOUT',
+  SIGNIN = 'SIGNIN',
+  SIGNOUT = 'SIGNOUT',
   LOAD_USER = 'LOAD_USER',
 }
 export type AuthAction =
   | {
-      type: AuthActionType.LOGIN
+      type: AuthActionType.SIGNIN
     }
   | {
       type: AuthActionType.LOAD_USER
       user: IUser
     }
-  | { type: AuthActionType.LOGOUT }
+  | { type: AuthActionType.SIGNOUT }
 
 export interface AuthState {
   isAuthenticated: boolean
@@ -27,13 +27,13 @@ export const initialState: AuthState = {
 
 export function authReducer(state: AuthState, action: AuthAction): AuthState {
   switch (action.type) {
-    case AuthActionType.LOGIN: {
+    case AuthActionType.SIGNIN: {
       return { ...state, isAuthenticated: true }
     }
     case AuthActionType.LOAD_USER: {
       return { ...state, user: action.user }
     }
-    case AuthActionType.LOGOUT: {
+    case AuthActionType.SIGNOUT: {
       return { isAuthenticated: false, user: null }
     }
     default:

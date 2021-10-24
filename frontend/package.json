@@ -1,5 +1,5 @@
 {
-  "name": "conduit-react-ts-golang-tailwind",
+  "name": "jt-post",
   "version": "2.0.0",
   "license": "MIT",
   "scripts": {
@@ -12,15 +12,18 @@
     "@heroicons/react": "^1.0.4",
     "@tailwindcss/forms": "^0.3.4",
     "axios": "^0.23.0",
+    "formik": "^2.2.9",
     "marked": "^3.0.7",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-router": "^5.2.1",
-    "react-router-dom": "^5.3.0"
+    "react-router-dom": "^5.3.0",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.15.4",
     "@babel/preset-react": "^7.14.5",
+    "@types/babel__core": "^7.1.16",
     "@types/marked": "^3.0.1",
     "@types/node": "^16.9.6",
     "@types/papaparse": "^5.2.6",

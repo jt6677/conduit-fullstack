@@ -9,13 +9,13 @@ import {
   LinkProps,
   NavLink,
 } from 'react-router-dom'
-import useAuth from '../../context/auth'
+import { useAuth } from '../../context/auth'
 import { IUser } from '../../types'
 import { APP_NAME } from '../../utils/utils'
 import { useHistory } from 'react-router-dom'
 import { AuthActionType } from '../../reducers/auth'
 import { useFetch } from '../../context/FetchContext'
-
+// import { Signout } from '../../api/AuthAPI'
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ')
 }
@@ -156,23 +156,24 @@ const LoggedInMenuView = ({
   )
 }
 export default function Header() {
-  const authClient = useFetch()
   const {
     state: { user },
     dispatch,
+    Signout,
   } = useAuth()
   let history = useHistory()
   const handleSignout = (): void => {
-    const logout = async () => {
+    const signout = async () => {
       try {
-        await authClient(`signout`)
+        console.log('signing out')
+        await Signout()
       } catch (err) {
         // window.location.reload()
         console.log(err)
       }
     }
-    dispatch({ type: AuthActionType.LOGOUT })
-    logout()
+    dispatch({ type: AuthActionType.SIGNOUT })
+    signout()
     history.push('/')
   }
   return (
@@ -224,13 +225,13 @@ export default function Header() {
                   {!user ? (
                     <>
                       <NavLink
-                        to="/login"
+                        to="/signin"
                         className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:border-gray-300 hover:text-gray-700"
                       >
                         Sign In
                       </NavLink>
                       <NavLink
-                        to="/register"
+                        to="/signup"
                         className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:border-gray-300 hover:text-gray-700"
                       >
                         Sign Up
@@ -257,13 +258,13 @@ export default function Header() {
               {!user ? (
                 <>
                   <NavLink
-                    to="/login"
+                    to="/signin"
                     className="block py-2 pl-3 pr-4 text-base font-medium text-indigo-700 border-l-4 border-indigo-500 bg-indigo-50 sm:pl-5 sm:pr-6"
                   >
                     Sign In
                   </NavLink>
                   <NavLink
-                    to="/register"
+                    to="/signup"
                     className="block py-2 pl-3 pr-4 text-base font-medium text-indigo-700 border-l-4 border-indigo-500 bg-indigo-50 sm:pl-5 sm:pr-6"
                   >
                     Sign Up

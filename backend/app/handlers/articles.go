@@ -17,7 +17,7 @@ type articlesGroup struct {
 }
 
 func (ag articlesGroup) insertArticle(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-	ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "handlers.user.update")
+	ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "handlers.articles.insertArticle")
 	defer span.End()
 
 	v, ok := ctx.Value(web.KeyValues).(*web.Values)
@@ -42,7 +42,7 @@ func (ag articlesGroup) insertArticle(ctx context.Context, w http.ResponseWriter
 
 func (ag articlesGroup) queryArticleWithSlug(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 
-	ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "handlers.article.QueryArticleByID")
+	ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "handlers.article.queryArticleByID")
 	defer span.End()
 
 	v, ok := ctx.Value(web.KeyValues).(*web.Values)

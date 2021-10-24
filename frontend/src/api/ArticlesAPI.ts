@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios'
 import API from './APIUtils'
 import { IArticle } from '../types'
+import { API_BASEURL } from '../utils/utils'
 
 const encode = encodeURIComponent
 
@@ -67,7 +68,7 @@ export function getFeedArticles(): Promise<AxiosResponse<Articles>> {
 }
 
 export function getArticle(slug: string): Promise<AxiosResponse<IArticle>> {
-  return API.get<IArticle>(`/article/${slug}`)
+  return API.get<IArticle>(`${API_BASEURL}/article/${slug}`)
 }
 
 export function unfavoriteArticle(

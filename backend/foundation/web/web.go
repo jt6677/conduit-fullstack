@@ -44,7 +44,7 @@ func NewApp(shutdown chan os.Signal, mw ...Middleware) *App {
 	// turn off csrfMw for development
 	// b := make([]byte, 32)
 	// _, _ = rand.Read(b)
-	// csrfMw := csrf.Protect(b, csrf.SameSite(csrf.SameSiteStrictMode), csrf.Path("/"))
+	// csrfMw := csrf.Protect(b, csrf.SameSite(csrf.SameSiteStrictMode))
 	// r.Use(csrfMw)
 	app := App{
 		mux:      r,
@@ -104,8 +104,57 @@ func (a *App) SignalShutdown() {
 // tracing. The opentelemetry mux then calls the application mux to handle
 // application traffic. This was setup on line 57 in the NewApp function.
 func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// nosurf.New(app)
 	a.otmux.ServeHTTP(w, r)
 }
+
+//Subrouter creates a subrouter with given pathprefix
+//it implements the gorilla mux.PathPrefix(pathPrefix).Subrouter()
+func (a *App) Subrouter(pathPrefix string) *mux.Router {
+	return a.mux.PathPrefix(pathPrefix).Subrouter()
+}
+
+// HandleSubRouter is our mechanism for mounting Handlers to a subrouter
+//for a given HTTP verb and path
+// pair, this makes for really easy, convenient routing.
+func (a *App) HandleSubRouter(subrouter *mux.Router, method string, path string, handler Handler, mw ...Middleware) {
+
+	// First wrap handler specific middleware around this handler.
+	handler = wrapMiddleware(mw, handler)
+
+	// Add the application's general middleware to the handler chain.
+	handler = wrapMiddleware(a.mw, handler)
+
+	// The function to execute for each request.
+	h := func(w http.ResponseWriter, r *http.Request) {
+
+		// Start or expand a distributed trace.
+		ctx := r.Context()
+		ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, r.URL.Path)
+		defer span.End()
+
+		// Set the context with the required values to
+		// process the request.
+		v := Values{
+			// TraceID: "need to be fixed",
+			TraceID: span.SpanContext().TraceID.String(),
+			Now:     time.Now(),
+		}
+		ctx = context.WithValue(ctx, KeyValues, &v)
+
+		// Call the wrapped handler functions.
+		if err := handler(ctx, w, r); err != nil {
+			a.SignalShutdown()
+			return
+		}
+	}
+
+	// Add this handler for the specified verb and route.
+	// to a specific router
+	subrouter.HandleFunc(path, h).Methods(method)
+}
+
+//FileServer register handler with provided pathPrefix and stripPrefix
 func (a *App) FileServer(pathPrefix string, stripPrefix string, fileHandler http.Handler) {
 	a.mux.PathPrefix(pathPrefix).Handler(http.StripPrefix(stripPrefix, fileHandler))
 }

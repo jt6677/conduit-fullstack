@@ -1,6 +1,6 @@
 [Unit]
 # Description is a human-readable name for the service.
-Description=fftimer API service
+Description=Conduit API service
 
 # Wait until PostgreSQL is running and the network is "up" before starting the service.
 After=postgresql.service

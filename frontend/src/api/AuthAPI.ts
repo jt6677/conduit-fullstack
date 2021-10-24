@@ -1,63 +1,35 @@
 import { AxiosResponse } from 'axios'
 import API, { TOKEN_KEY, setToken } from './APIUtils'
 import { IUser } from '../types'
-import { setLocalStorage } from '../utils/utils'
+import { useFetch } from '../context/FetchContext'
 
-type User = {
-  user: IUser & { token: string }
+export function GetUser(): Promise<IUser> {
+  const { authAxios } = useFetch()
+  return authAxios.get<IUser>('me').then((response) => response.data)
 }
 
-function handleUserResponse({ user: { token, ...user } }: User) {
-  setLocalStorage(TOKEN_KEY, token)
-  setToken(token)
-  return user
+export function Signin(email: string, password: string): Promise<IUser> {
+  const { authAxios } = useFetch()
+  return authAxios
+    .post<IUser>('/signin', {
+      user: { email, password },
+    })
+    .then((response) => response.data)
 }
 
-export function getCurrentUser(): Promise<AxiosResponse<User>> {
-  return API.get<User>('/me')
-}
-
-export function login(email: string, password: string) {
-  return API.post<User>('/signin', {
-    user: { email, password },
-  })
-}
-// export function login(
-//   email: string,
-//   password: string
-// ): Promise<{
-//   email: string
-//   username: string
-//   bio: string
-//   image: string
-// }> {
-//   return API.post<User>('/signin', {
-//     user: { email, password },
-//   }).then((user) => handleUserResponse(user.data))
-// }
-
-export function register(user: {
-  username: string
-  email: string
+export function Signup(
+  username: string,
+  email: string,
   password: string
-}): Promise<{
-  email: string
-  username: string
-  bio: string
-  image: string
-}> {
-  return API.post<User>('/signup', { user }).then((user) =>
-    handleUserResponse(user.data)
-  )
+): Promise<IUser> {
+  const { authAxios } = useFetch()
+  return authAxios
+    .post<IUser>('/signup', { username, email, password })
+    .then((response) => response.data)
 }
 
-export function updateUser(
-  user: IUser & Partial<{ password: string }>
-): Promise<AxiosResponse<User>> {
-  return API.put<User>('/user', { user })
-}
-
-export function logout(): void {
-  localStorage.removeItem(TOKEN_KEY)
-  setToken(null)
+export function Signout() {
+  const { authAxios } = useFetch()
+  console.log('signing out')
+  return authAxios.get('/signout')
 }

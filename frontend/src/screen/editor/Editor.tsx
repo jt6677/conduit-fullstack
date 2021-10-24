@@ -2,7 +2,6 @@ import React from 'react'
 import { useHistory, RouteProps, useParams } from 'react-router-dom'
 import { editorReducer, initalState } from '../../reducers/editor'
 import { getArticle, updateArticle } from '../../api/ArticlesAPI'
-import ListErrors from '../../common/ListErrors'
 import { EditorActionType } from '../../reducers/editor'
 import { useFetch } from '../../context/FetchContext'
 
@@ -92,7 +91,7 @@ export default function Editor(_: RouteProps) {
     <div className="container pl-4 pr-4 mt-6 ml-auto mr-auto">
       <div className="grid grid-cols-4 ">
         <div className="col-span-2 col-start-2 ">
-          <ListErrors errors={state.errors} />
+          {/* <ListErrors errors={state.errors} /> */}
 
           <form onSubmit={handleSubmit}>
             <div className="form-group">

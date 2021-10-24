@@ -4,9 +4,8 @@ import { followProfile, unfollowProfile } from '../../api/ProfileAPI'
 import { IArticle } from '../../types'
 import { ArticleAction } from '../../reducers/article'
 import DeleteButton from './DeleteButton'
-import FollowUserButton from '../../common/FollowUserButton'
 import FavoriteButton from '../../common/FavoriteButton'
-import useAuth from '../../context/auth'
+import { useAuth } from '../../context/auth'
 import { ArticleActionType } from '../../reducers/article'
 type ArticleActionsProps = {
   article: IArticle
@@ -48,11 +47,11 @@ export default function ArticleActions({
     </>
   ) : (
     <>
-      <FollowUserButton
+      {/* <FollowUserButton
         onClick={handleFollowButtonClick}
         profile={article.author}
         loading={loading}
-      />
+      /> */}
       <FavoriteButton article={article} dispatch={dispatch}>
         {article.favorited ? 'Unfavorite Article' : 'Favorite Article'}
         <span className="counter">({article.favoritesCount})</span>
