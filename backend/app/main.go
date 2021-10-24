@@ -35,13 +35,13 @@ func run(log *log.Logger) error {
 	var cfg struct {
 		conf.Version
 		Web struct {
-			// APIHost         string        `conf:"default:0.0.0.0:3000"`
 			APIHost         string        `conf:"default:localhost:8080"`
 			DebugHost       string        `conf:"default:0.0.0.0:4000"`
 			ReadTimeout     time.Duration `conf:"default:20s"`
 			WriteTimeout    time.Duration `conf:"default:20s"`
 			ShutdownTimeout time.Duration `conf:"default:10s"`
 			SessionSecret   string        `conf:"default:lfgggg"`
+			CsrfAuthKey     string        `conf:"default:32-byte-long-auth-key"`
 			MaxMultipartMem int           `conf:"default:2048576"`
 		}
 		DB struct {
@@ -156,7 +156,7 @@ func run(log *log.Logger) error {
 
 	api := http.Server{
 		Addr:         cfg.Web.APIHost,
-		Handler:      handlers.API(build, cfg.Web.MaxMultipartMem, shutdown, db, log, auth),
+		Handler:      handlers.API(build, cfg.Web.CsrfAuthKey, shutdown, db, log, auth),
 		ReadTimeout:  cfg.Web.ReadTimeout,
 		WriteTimeout: cfg.Web.WriteTimeout,
 	}

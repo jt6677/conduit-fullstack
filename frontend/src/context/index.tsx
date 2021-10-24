@@ -2,6 +2,7 @@ import * as React from 'react'
 import { BrowserRouter as Router } from 'react-router-dom'
 // import {ReactQueryConfigProvider} from 'react-query'
 import { FetchProvider } from './FetchContext'
+// import { FetchProvider as FetchsProvider } from './FetchsContext'
 import { AuthProvider } from '../context/auth'
 import { ArticlesProvider } from '../context/articles'
 // const queryConfig = {
@@ -20,16 +21,18 @@ type AppProvidersProps = {
 }
 function AppProviders({ children }: AppProvidersProps) {
   return (
-    <AuthProvider>
-      <Router>
-        <FetchProvider>
+    <Router>
+      <FetchProvider>
+        <AuthProvider>
+          {/* <FetchsProvider> */}
           <ArticlesProvider>
             {children}
             {/* <AuthProvider>{children}</AuthProvider> */}
           </ArticlesProvider>
-        </FetchProvider>
-      </Router>
-    </AuthProvider>
+          {/* </FetchsProvider> */}
+        </AuthProvider>
+      </FetchProvider>
+    </Router>
   )
 }
 

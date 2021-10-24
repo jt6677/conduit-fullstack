@@ -1,16 +1,9 @@
-# Set the name of the new user to create.
-USERNAME=jtforward
-# Prompt to enter a password for the PostgreSQL 
-read -p "Enter password for DB user: " DB_PASSWORD
-
+#!/bin/bash
 # ==================================================================================== #
 # SCRIPT LOGIC
 # ==================================================================================== #
+echo "let go!"
 
-# Navigate to root directory and make /etc/www/backend and /etc/www/frontend
-cd /
-mkdir -p /etc/www/backend
-mkdir -p /etc/www/frontend
 # Update all software packages. Using the --force-confnew flag means that configuration 
 # files will be replaced if newer ones are available.
 apt update
@@ -35,9 +28,9 @@ add-apt-repository --yes universe
 apt --yes install postgresql
 
 # Set up the jtforward DB and create a user account with the password entered earlier.
-sudo -i -u postgres psql -c "CREATE DATABASE fftimer"
+sudo -i -u postgres psql -c "CREATE DATABASE conduit"
 sudo -i -u postgres psql -c "ALTER USER postgres WITH PASSWORD '123321'"
-sudo -i -u postgres psql -d fftimer -c "CREATE EXTENSION IF NOT EXISTS citext"
+sudo -i -u postgres psql -d conduit -c "CREATE EXTENSION IF NOT EXISTS citext"
 # sudo -i -u postgres psql -d fftimer -c "CREATE ROLE jtforward WITH LOGIN PASSWORD '${DB_PASSWORD}'"
 # sudo -i -u postgres psql -d fftimer -c "CREATE ROLE jtforward WITH LOGIN PASSWORD '123321'"
 

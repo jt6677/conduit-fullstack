@@ -6,62 +6,70 @@ import {
   AuthState,
   AuthActionType,
 } from '../reducers/auth'
-import { getLocalStorageValue } from '../utils/utils'
-import { TOKEN_KEY, setToken, isTokenValid } from '../api/APIUtils'
-import { logout } from '../api/AuthAPI'
-import { GetUser } from '../utils/api-client'
+import { useFetch } from '../context/FetchContext'
+import { IUser } from '../types'
+
+export function createCtx<ContextType>() {
+  const ctx = React.createContext<ContextType | undefined>(undefined)
+  function useCtx() {
+    const c = React.useContext(ctx)
+    if (!c) throw new Error('useCtx must be inside a Provider with a value')
+    return c
+  }
+  return [useCtx, ctx.Provider] as const
+}
 
 type AuthContextProps = {
   state: AuthState
   dispatch: Dispatch<AuthAction>
+  GetUser: () => Promise<IUser>
+  Signin: (email: string, password: string) => Promise<IUser>
+  Signup: (username: string, email: string, password: string) => Promise<IUser>
+  Signout: () => any
 }
-
-const AuthContext = createContext<AuthContextProps>({
-  state: initialState,
-  dispatch: () => initialState,
-})
-
+export const [useAuth, CtxProvider] = createCtx<AuthContextProps>()
 // AuthProvider wrappes AuthContext.Provider
 export function AuthProvider(props: React.PropsWithChildren<any>): JSX.Element {
   const [state, dispatch] = useReducer(authReducer, initialState)
+  const { authAxios } = useFetch()
+  function GetUser(): Promise<IUser> {
+    return authAxios.get<IUser>('me').then((response) => response.data)
+  }
+  function Signin(email: string, password: string): Promise<IUser> {
+    return authAxios
+      .post<IUser>('/signin', { email, password })
+      .then((response) => response.data)
+  }
+  function Signup(
+    username: string,
+    email: string,
+    password: string
+  ): Promise<IUser> {
+    return authAxios
+      .post<IUser>('/signup', { username, email, password })
+      .then((response) => response.data)
+  }
+  function Signout() {
+    return authAxios.get('/signout')
+  }
+
   React.useEffect(() => {
     async function fetchUser() {
       try {
-        const payload = await GetUser()
-        // console.log(payload)
-        // session_id: 0
-        // user_id: 5
-        // username: 'qwe1'
-        dispatch({ type: AuthActionType.LOAD_USER, user: payload.data })
+        const user = await GetUser()
+        dispatch({ type: AuthActionType.LOAD_USER, user })
       } catch (err) {
-        dispatch({ type: AuthActionType.LOGOUT })
-        console.log(err)
+        dispatch({ type: AuthActionType.SIGNOUT })
+        console.log('cannot auto signin', err)
       }
     }
     fetchUser()
-    // const token: string | null = getLocalStorageValue(TOKEN_KEY)
-
-    // if (!token) return
-
-    // if (isTokenValid(token)) {
-    //   setToken(token)
-
-    // } else {
-    //   dispatch({ type: AuthActionType.LOGOUT })
-    //   logout()
-    // }
   }, [])
 
-  return <AuthContext.Provider value={{ state, dispatch }} {...props} />
-}
-
-// hooks
-export default function useAuth(): AuthContextProps {
-  // return React.useContext(AuthContext)
-
-  const context = useContext(AuthContext)
-  if (!context) {
-    throw new Error(`useAuth must be used within an AuthProvider`)
-  }
-  return context
+  return (
+    <CtxProvider
+      value={{ state, dispatch, GetUser, Signin, Signup, Signout }}
+      {...props}
+    />
+  )
 }

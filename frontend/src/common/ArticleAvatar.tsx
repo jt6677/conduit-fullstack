@@ -8,6 +8,7 @@ type ArticleAvatarProps = {
 }
 
 export default function ArticleAvatar({
+  //@ts-ignore
   article: { author, createdAt },
 }: ArticleAvatarProps) {
   return (

@@ -1,0 +1,4 @@
+export REMOTE_IP=34.150.68.127
+export USER=edsky2008
+export SSHKEYLOCATION=C:\\Users\\defiance\\.ssh\\gc\\id_rsa
+# export USER=root

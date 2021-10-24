@@ -1,6 +1,6 @@
 import API from './APIUtils'
 import { IProfile } from '../types'
-
+import { API_BASEURL } from '../utils/utils'
 type Profile = {
   profile: IProfile
 }
@@ -10,7 +10,7 @@ export function followProfile(username: string) {
 }
 
 export function getProfile(username: string) {
-  return API.get<IProfile>(`/profiles/${username}`)
+  return API.get<IProfile>(`${API_BASEURL}/profiles/${username}`)
 }
 
 export function unfollowProfile(username: string) {

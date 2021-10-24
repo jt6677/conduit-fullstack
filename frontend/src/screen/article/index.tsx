@@ -1,18 +1,16 @@
 import React from 'react'
 import marked from 'marked'
 import { useParams, RouteProps, Link } from 'react-router-dom'
-import ArticleMeta from './ArticleMeta'
-import ArticleTags from '../../common/ArticleTags'
-import CommentContainer from './CommentContainer'
 import {
   articleReducer,
   initialState,
   ArticleActionType,
 } from '../../reducers/article'
-import { getArticleComments } from '../../api/CommentsAPI'
 import { getArticle } from '../../api/ArticlesAPI'
+import { AxiosResponse } from 'axios'
 import { IComment, IArticle } from '../../types'
 import { ALT_IMAGE_URL } from '../../utils/utils'
+import { useFetch } from '../../context/FetchContext'
 
 export default function Article(_: RouteProps): JSX.Element | null {
   const [{ article, comments, loading, error }, dispatch] = React.useReducer(
@@ -20,6 +18,7 @@ export default function Article(_: RouteProps): JSX.Element | null {
     initialState
   )
   let { slug } = useParams<{ slug: string }>()
+  const { publicAxios } = useFetch()
 
   React.useEffect(() => {
     dispatch({ type: ArticleActionType.FETCH_ARTICLE_BEGIN })
@@ -53,16 +52,20 @@ export default function Article(_: RouteProps): JSX.Element | null {
 
     const fetchArticle = async () => {
       try {
-        const [articlePayload, commentsPayload] = await Promise.all([
-          getArticle(slug),
-          getArticleComments(slug),
-        ])
+        // const [articlePayload, commentsPayload] = await Promise.all([
+        //   getArticle(slug),
+        // ])
+        function getArticle(slug: string): Promise<AxiosResponse<IArticle>> {
+          console.log('publicAxios')
+          return publicAxios.get<IArticle>(`/article/${slug}`)
+        }
+        const payload = await getArticle(slug)
 
         if (!ignore) {
           dispatch({
             type: ArticleActionType.FETCH_ARTICLE_SUCCESS,
             payload: {
-              article: articlePayload.data,
+              article: payload.data,
               // article: articlePayload.data.article,
               comments: cc,
               // comments: commentsPayload.data.comments,
@@ -70,7 +73,6 @@ export default function Article(_: RouteProps): JSX.Element | null {
           })
         }
       } catch (err) {
-        console.log(err)
         if (err && typeof err === 'string') {
           dispatch({
             type: ArticleActionType.FETCH_ARTICLE_ERROR,

@@ -7,6 +7,7 @@ import (
 	"runtime"
 
 	"github.com/jt6677/conduit-fullstack/foundation/web"
+	"go.opentelemetry.io/otel/api/trace"
 )
 
 // m contains the global program counters for the application.
@@ -28,8 +29,8 @@ func Metrics() web.Middleware {
 
 		// Create the handler that will be attached in the middleware chain.
 		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-			// ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "business.mid.metrics")
-			// defer span.End()
+			ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "business.mid.metrics")
+			defer span.End()
 
 			err := handler(ctx, w, r)
 

@@ -61,7 +61,6 @@ func (ug userGroup) signin(ctx context.Context, w http.ResponseWriter, r *http.R
 	if err := web.Decode(r, &nu); err != nil {
 		return errors.Wrap(err, "")
 	}
-	fmt.Println("INCOMING USER:", nu.Email, nu.Password)
 	//Authenticate
 	usr, err := ug.user.Authenticate(ctx, v.TraceID, nu.Email, nu.Password)
 	if err != nil {
@@ -94,7 +93,7 @@ func (ug userGroup) isLogin(ctx context.Context, w http.ResponseWriter, r *http.
 				return errors.Wrapf(err, "Query User By Id")
 			}
 
-			return web.Respond(ctx, w, trustedUserInfo, http.StatusAccepted)
+			return web.Respond(ctx, w, trustedUserInfo, http.StatusOK)
 		}
 	}
 	return web.Respond(ctx, w, nil, http.StatusUnauthorized)
@@ -125,7 +124,7 @@ func (ug userGroup) signout(ctx context.Context, w http.ResponseWriter, r *http.
 	//expires session cookie in user's client
 	http.SetCookie(w, &http.Cookie{Name: "session", MaxAge: -1})
 	// http.SetCookie(w, &http.Cookie{Name: "_gorilla_csrf", MaxAge: -1})
-	return web.Respond(ctx, w, "Signout Successful", http.StatusCreated)
+	return web.Respond(ctx, w, "Signout Successful", http.StatusOK)
 }
 
 //profile returns user profile with name coming from ulr params

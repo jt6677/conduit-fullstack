@@ -8,6 +8,7 @@ import (
 	"github.com/jt6677/conduit-fullstack/business/auth"
 	"github.com/jt6677/conduit-fullstack/foundation/web"
 	"github.com/pkg/errors"
+	"go.opentelemetry.io/otel/api/trace"
 )
 
 //To Do add User Validation with DB query
@@ -20,8 +21,8 @@ func Authenticate(a *auth.Auth) web.Middleware {
 
 		// Create the handler that will be attached in the middleware chain.
 		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-			// ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "business.mid.authenticate")
-			// defer span.End()
+			ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "business.mid.authenticate")
+			defer span.End()
 
 			//To Do add User Validation with DB query
 			// Validate User.

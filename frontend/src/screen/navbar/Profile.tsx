@@ -6,7 +6,7 @@ import {
   useParams,
 } from 'react-router-dom'
 import { IProfile } from '../../types'
-import useAuth from '../../context/auth'
+import { useAuth } from '../../context/auth'
 import { ALT_IMAGE_URL, ALT_BIO } from '../../utils/utils'
 import {
   unfollowProfile,
@@ -33,7 +33,6 @@ export default function Profile(_: RouteProps): JSX.Element {
     async function fetchProfile() {
       try {
         const payload = await getProfile(username)
-        // console.log(payload)
         if (!ignore) {
           console.log(payload.data.image)
           setProfile(payload.data)

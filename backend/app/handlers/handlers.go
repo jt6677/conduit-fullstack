@@ -1,26 +1,35 @@
 package handlers
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"os"
 
+	"github.com/gorilla/csrf"
 	"github.com/jmoiron/sqlx"
 	"github.com/jt6677/conduit-fullstack/business/auth"
 	"github.com/jt6677/conduit-fullstack/business/data/articles"
 	"github.com/jt6677/conduit-fullstack/business/data/user"
 	"github.com/jt6677/conduit-fullstack/business/mid"
 	"github.com/jt6677/conduit-fullstack/foundation/web"
+	"go.opentelemetry.io/otel/api/trace"
 )
 
 // API constructs an http.Handler with all application routes defined.
-func API(build string, maxMultipartMem int, shutdown chan os.Signal, db *sqlx.DB, log *log.Logger, a *auth.Auth) http.Handler {
+func API(build string, csrfAuthKey string, shutdown chan os.Signal, db *sqlx.DB, log *log.Logger, a *auth.Auth) http.Handler {
 
+	// =========================================================================
 	// Construct the web.App which holds all routes as well as common Middleware.
 	app := web.NewApp(shutdown, mid.Logger(log), mid.Errors(log), mid.Metrics(), mid.Panics(log))
+
 	// =========================================================================
-	//csrf Response
-	// app.Handle(http.MethodGet, "/api/csrf", csrfResponse)
+	//Register a subRouter with "/api" pathPrefix
+	//Create a csrf middleware and attach to that subRouter
+	api := app.Subrouter("/api")
+	csrfMiddleware := csrf.Protect([]byte(csrfAuthKey))
+	api.Use(csrfMiddleware)
+	app.HandleSubRouter(api, http.MethodGet, "/csrf", CsrfTokenResponse)
 
 	// =========================================================================
 	// Register health check endpoint. This route is not authenticated.
@@ -37,11 +46,11 @@ func API(build string, maxMultipartMem int, shutdown chan os.Signal, db *sqlx.DB
 		user: user.New(log, db),
 		auth: a,
 	}
-	app.Handle(http.MethodGet, "/api/me", ug.isLogin, mid.Authenticate(a))
-	app.Handle(http.MethodPost, "/api/signup", ug.signup)
-	app.Handle(http.MethodPost, "/api/signin", ug.signin)
-	app.Handle(http.MethodGet, "/api/signout", ug.signout, mid.Authenticate(a))
-	app.Handle(http.MethodGet, "/api/profiles/{username:[a-zA-Z0-9]+}", ug.profile)
+	app.HandleSubRouter(api, http.MethodGet, "/me", ug.isLogin, mid.Authenticate(a))
+	app.HandleSubRouter(api, http.MethodPost, "/signup", ug.signup, mid.SkipCsrfCheck())
+	app.HandleSubRouter(api, http.MethodPost, "/signin", ug.signin)
+	app.HandleSubRouter(api, http.MethodGet, "/signout", ug.signout, mid.Authenticate(a))
+	app.HandleSubRouter(api, http.MethodGet, "/profiles/{username:[a-zA-Z0-9]+}", ug.profile)
 
 	// =========================================================================
 	//Register session endpoints.
@@ -49,10 +58,22 @@ func API(build string, maxMultipartMem int, shutdown chan os.Signal, db *sqlx.DB
 		articles: articles.New(log, db),
 		auth:     a,
 	}
-	app.Handle(http.MethodPost, "/api/articles", ag.insertArticle, mid.Authenticate(a))
-	app.Handle(http.MethodGet, "/api/article/{slug:[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$}", ag.queryArticleWithSlug, mid.Authenticate(a))
-	app.Handle(http.MethodGet, "/api/articles/all", ag.queryArticles)
-	app.Handle(http.MethodGet, "/api/articles/myfeed", ag.queryArticlesByUser, mid.Authenticate(a))
+	app.HandleSubRouter(api, http.MethodPost, "/articles", ag.insertArticle, mid.Authenticate(a))
+	app.HandleSubRouter(api, http.MethodGet, "/article/{slug:[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$}", ag.queryArticleWithSlug, mid.Authenticate(a))
+	app.HandleSubRouter(api, http.MethodGet, "/articles/all", ag.queryArticles)
+	app.HandleSubRouter(api, http.MethodGet, "/articles/myfeed", ag.queryArticlesByUser, mid.Authenticate(a))
 
 	return app
+}
+
+func CsrfTokenResponse(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+	ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "handlers.user.update")
+	defer span.End()
+	type csrfResponse struct {
+		CsrfToken string `json:"csrfToken"`
+	}
+	token := csrfResponse{
+		CsrfToken: csrf.Token(r),
+	}
+	return web.Respond(ctx, w, token, http.StatusOK)
 }

@@ -1,77 +1,65 @@
-import React from 'react'
-import axios, { AxiosResponse } from 'axios'
-export type AuthClientType = (
-  endpoint: string,
-  { data, files, customHeaders, ...customConfig }?: any
-) => Promise<unknown>
-const FetchContext = React.createContext<AuthClientType>(authClient)
-FetchContext.displayName = 'FecthContext'
-const apiURL = '/api'
+import React, { createContext, useEffect } from 'react'
+import axios, { AxiosInstance } from 'axios'
 
-const csrfAxios = axios.create({
-  baseURL: apiURL,
-})
-function authClient(
-  endpoint: string,
-  { data, files, customHeaders, ...customConfig }: any = {}
-) {
-  const config = {
-    url: `/${endpoint}`,
-    method: data ? 'POST' : 'GET',
-    // data: data,
-    data: data ? JSON.stringify(data) : files ? files : undefined,
-    headers: {
-      // Authorization: token ? `Bearer ${token}` : undefined,
-      'Content-Type': data
-        ? 'application/json'
-        : files
-        ? 'multipart/form-data'
-        : undefined,
-      ...customHeaders,
-    },
-    ...customConfig,
-  }
+type ProviderValue = { authAxios: AxiosInstance; publicAxios: AxiosInstance }
+type ContextDefaultValue = undefined
+type ContextValue = ProviderValue | ContextDefaultValue
 
-  return csrfAxios(config).then(async (response) => {
-    if (response.status === 401) {
-      // await auth.logout()
-      console.log('csrf failed')
-      // window.location.assign(window.location)
-      window.location.reload()
-      // queryClient.clear()
-      // return Promise.reject({message: 'Refresh to Get CSRF Token'})
-    }
-    const data = await response.data
-    if (response.status >= 200 && response.status < 300) {
-      return data
-    } else {
-      return Promise.reject(data)
-    }
+const FetchContext = createContext<ContextValue>(undefined)
+
+function FetchProvider(props: React.PropsWithChildren<any>) {
+  const publicAxios = axios.create({
+    baseURL: import.meta.env.VITE_API_URL,
   })
-}
-function FetchProvider(props: React.PropsWithChildren<any>): JSX.Element {
-  // React.useEffect(() => {
-  //   const getCsrf = async () => {
-  //     try {
-  //       const {data} = await axios.get('/v1/csrf')
-  //       csrfAxios.defaults.headers['X-CSRF-Token'] = data.csrf
-  //     } catch (error) {
-  //       console.log('csrf error', error)
-  //       window.location.assign(window.location)
-  //     }
-  //   }
-  //   getCsrf()
-  // }, [csrfAxios])
+  const authAxios = axios.create({
+    baseURL: import.meta.env.VITE_API_URL,
+  })
+  useEffect(() => {
+    const getCsrfToken = async () => {
+      try {
+        const { data } = await publicAxios.get<{ csrfToken: string }>(
+          import.meta.env.VITE_API_URL_CSRF
+        )
+        if (data) {
+          // publicAxios.defaults.headers.common['X-CSRF-Token'] = data.csrfToken
+          // authAxios.defaults.headers.common['X-CSRF-Token'] = data.csrfToken
+        }
+      } catch (err) {
+        console.log('asd', err)
+        //   window.location.reload()
+        //   return Promise.reject('shit happened')
+      }
+    }
+    getCsrfToken()
+  }, [authAxios, publicAxios])
 
-  return <FetchContext.Provider value={authClient} {...props} />
+  authAxios.interceptors.response.use(
+    (response) => {
+      return response
+    },
+    (error) => {
+      // const code = error && error.response ? error.response.status : 0
+      // if (code === 401 || code === 403) {
+      //   console.log('error code', code)
+      // }
+      return Promise.reject(error)
+    }
+  )
+  return (
+    <FetchContext.Provider
+      value={{
+        authAxios,
+        publicAxios,
+      }}
+      {...props}
+    />
+  )
 }
-
-function useFetch() {
+function useFetch(): { authAxios: AxiosInstance; publicAxios: AxiosInstance } {
   const context = React.useContext(FetchContext)
   if (context === undefined) {
     throw new Error(`useFetch must be used within a FetchProvider`)
   }
   return context
 }
-
-export { FetchProvider, useFetch }
+export { FetchContext, useFetch, FetchProvider }

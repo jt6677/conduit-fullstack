@@ -1,6 +1,5 @@
 import React from 'react'
 import ArticlePreview from './ArticlePreview'
-// import ListPagination from './ListPagination'
 import {
   getArticles,
   getFeedArticles,
@@ -36,80 +35,49 @@ const loadArticles = (tab: ITab, page = 0) => {
 // }
 
 export default function ArticleList() {
-  const authClient = useFetch()
+  const { authAxios } = useFetch()
   const {
     state: { loading, error, articlesCount, selectedTab, page },
-    // state: { articles, loading, error, articlesCount, selectedTab, page },
     dispatch,
   } = useArticles()
-  const [articles, setArticles] = React.useState<Array<IArticle>>()
+  const [articles, setArticles] = React.useState<Array<IArticle> | null>()
   React.useEffect(() => {
     let ignore = false
     async function fetchArticles() {
       try {
         let data
         if (selectedTab.type === ITabType.ALL) {
-          data = await authClient(`articles/all`, {
-            method: 'GET',
-          })
-          if (data) {
-            //@ts-ignore
-            setArticles(data)
+          data = await authAxios
+            .get<Array<IArticle>>('articles/all')
+            .then((response) => response.data)
+          if (!ignore) {
+            if (data) {
+              setArticles(data)
+            }
           }
         }
         if (selectedTab.type === ITabType.FEED) {
-          data = await authClient(`articles/myfeed`, {
-            method: 'GET',
-          })
-          //@ts-ignore
-          console.log('asdas', data)
-          if (data) {
-            //@ts-ignore
-            setArticles(data)
-          } else {
-            //@ts-ignore
-            setArticles(null)
+          data = await authAxios
+            .get<Array<IArticle>>('articles/myfeed')
+            .then((response) => response.data)
+          if (!ignore) {
+            if (data) {
+              setArticles(data)
+            } else {
+              setArticles(null)
+            }
           }
         }
-
-        // //@ts-ignore
-        // setArticles(data)
       } catch (error) {
         console.log(error)
       }
     }
-    // async function fetchArticles() {
-    //   dispatch({ type: ArticleListActionType.FETCH_ARTICLES_BEGIN })
-    //   try {
-    //     const payload = await loadArticles(selectedTab, page)
-    //     // console.log(payload.data)
-    //     if (!ignore) {
-    //       dispatch({
-    //         type: ArticleListActionType.FETCH_ARTICLES_SUCCESS,
-    //         //@ts-ignore
-    //         payload: payload.data,
-    //       })
-    //     }
-    //   } catch (err) {
-    //     if (!ignore) {
-    //       dispatch({
-    //         type: ArticleListActionType.FETCH_ARTICLES_ERROR,
-    //         error: `${err}`,
-    //       })
-    //     }
-    //   }
-    // }
-    // fetchArticles().catch((err) => {
-    //   console.log(err)
-    // })
     fetchArticles()
-
     return () => {
       ignore = true
     }
   }, [dispatch, page, selectedTab])
 
-  // console.log('asd', articles)
   if (loading) {
     return <div className="py-6">Loading...</div>
   }
@@ -117,9 +85,6 @@ export default function ArticleList() {
     return <div className="py-6">{error}</div>
   }
 
-  // if (articles.length === 0) {
-  //   return <div className="py-6">No articles are here... yet.</div>
-  // }
   if (articles) {
     return (
       <div className="relative px-4 pt-2 pb-20 sm:px-6 lg:pt-2 lg:pb-28 lg:px-8">

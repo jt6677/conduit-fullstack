@@ -1,8 +1,6 @@
 import React from 'react'
 import { useHistory, RouteProps } from 'react-router-dom'
-import ListErrors from '../../common/ListErrors'
-import useAuth from '../../context/auth'
-import { updateUser, logout } from '../../api/AuthAPI'
+import { useAuth } from '../../context/auth'
 import { IErrors } from '../../types'
 import { AuthActionType } from '../../reducers/auth'
 
@@ -18,6 +16,7 @@ export default function Settings(_: RouteProps) {
   const {
     state: { user },
     dispatch,
+    Signout,
   } = useAuth()
   const [loading, setLoading] = React.useState(false)
   const [errors, setErrors] = React.useState<IErrors | null>(null)
@@ -57,12 +56,12 @@ export default function Settings(_: RouteProps) {
     setLoading(true)
     if (!form.password) {
       delete form.password
-    }
-    try {
-      const payload = await updateUser(form)
-      dispatch({ type: AuthActionType.LOAD_USER, user: payload.data.user })
-    } catch (error) {
-      console.log(error)
+      // }
+      // try {
+      //   const payload = await updateUser(form)
+      //   dispatch({ type: AuthActionType.LOAD_USER, user: payload.data.user })
+      // } catch (error) {
+      //   console.log(error)
 
       // if (error.status === 422) {
       //   setErrors(error.data.errors)
@@ -71,9 +70,9 @@ export default function Settings(_: RouteProps) {
     setLoading(false)
   }
 
-  const handleLogout = () => {
-    dispatch({ type: AuthActionType.LOGOUT })
-    logout()
+  const handleSignout = () => {
+    dispatch({ type: AuthActionType.SIGNOUT })
+    Signout()
     history.push('/')
   }
   return (
@@ -93,6 +92,7 @@ export default function Settings(_: RouteProps) {
           </div>
           <div className="mt-5 md:mt-0 md:col-span-2">
             <form onSubmit={handleSubmit}>
+              {/* <form onSubmit={handleSubmit}> */}
               <div className="shadow sm:rounded-md sm:overflow-hidden">
                 <div className="px-4 py-5 space-y-6 bg-white sm:p-6">
                   <div className="grid grid-cols-3 gap-6">
@@ -285,7 +285,7 @@ export default function Settings(_: RouteProps) {
           <button
             type="button"
             className="px-4 py-2 font-semibold text-red-700 bg-red-100 border border-transparent rounded-md hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
-            onClick={handleLogout}
+            onClick={handleSignout}
           >
             Log Out
           </button>

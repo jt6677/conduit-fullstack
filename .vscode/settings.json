@@ -4,9 +4,8 @@
     "titleBar.activeForeground": "#e7e7e7",
     "titleBar.inactiveBackground": "#2492c999",
     "titleBar.inactiveForeground": "#e7e7e799",
-    "editorGroup.border": "#43aadd",
-    "panel.border": "#43aadd",
-    "sash.hoverBorder": "#43aadd"
+    "tab.activeBorder": "#43aadd",
+    "titleBar.border": "#2492c9"
   },
   "peacock.color": "#2492c9",
   "git.ignoreLimitWarning": true
