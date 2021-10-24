@@ -74,6 +74,4 @@ notes/**
 *.config
 *config
 .envrc
-*.envrc
-makefile
-.vscode
+
