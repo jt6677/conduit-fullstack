@@ -1,10 +1,12 @@
 import React from 'react'
-import { useHistory, Link, RouteProps, Redirect } from 'react-router-dom'
+import { Link, RouteProps, Redirect } from 'react-router-dom'
 import { useAuth } from '~/context/auth'
-import { IComment, IErrors } from '~/types'
+import { IError } from '~/types'
 import { AuthActionType } from '~/reducers/auth'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
+import Alert from '@mui/material/Alert'
+import { AxiosError } from 'axios'
 
 export default function Signin(_: RouteProps) {
   const [loading, setLoading] = React.useState(false)
@@ -18,7 +20,7 @@ export default function Signin(_: RouteProps) {
     dispatch,
     Signin,
   } = useAuth()
-  let history = useHistory()
+
   const handleSubmit = async ({
     email,
     password,
@@ -26,24 +28,33 @@ export default function Signin(_: RouteProps) {
     email: string
     password: string
   }) => {
+    setIsError(null)
     setLoading(true)
     try {
       const user = await Signin(email, password)
-      dispatch({ type: AuthActionType.LOAD_USER, user })
-      history.push('/')
+      setIsSuccess('Successfully Signed In')
+      setTimeout(() => {
+        setRedirectOnLogin(true)
+        dispatch({ type: AuthActionType.LOAD_USER, user })
+      }, 700)
+      // history.push('/')
     } catch (error) {
-      console.log('failed to signin', error)
+      const err = error as AxiosError<IError>
+      if (err.response) {
+        setIsError(err.response.data.error)
+        setTimeout(() => {
+          setIsError(null)
+        }, 1200)
+      } else {
+        console.log(error)
+      }
       setLoading(false)
     }
   }
 
-  if (user) {
-    return <Redirect to="/" />
-  }
-
   return (
     <>
-      {/* {redirectOnLogin && <Redirect to="/clock" />} */}
+      {redirectOnLogin && <Redirect to="/" />}
       <div className="flex flex-col justify-start min-h-screen py-12 bg-gray-50 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-2 text-3xl font-extrabold text-center text-indigo-700">
@@ -152,6 +163,16 @@ export default function Signin(_: RouteProps) {
                     >
                       Sign in
                     </button>
+                    {isSuccess && (
+                      <Alert severity="success" className="mt-2">
+                        {isSuccess}
+                      </Alert>
+                    )}
+                    {isError && (
+                      <Alert severity="error" className="mt-2">
+                        {isError}
+                      </Alert>
+                    )}
                   </div>
                 </form>
               )}

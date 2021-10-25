@@ -1,5 +1,5 @@
 import React from 'react'
-import ArticleActions from './ArticleActions'
+import ArticleActions from '~/screen/article/ArticleActions'
 import { IArticle } from '~/types'
 import { ArticleAction } from '~/reducers/article'
 import ArticleAvatar from '~/common/ArticleAvatar'

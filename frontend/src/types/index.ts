@@ -36,3 +36,6 @@ export interface IUser {
 export interface IErrors {
   [key: string]: string[]
 }
+export interface IError {
+  error: string
+}

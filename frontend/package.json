@@ -8,8 +8,11 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.5.0",
+    "@emotion/styled": "^11.3.0",
     "@headlessui/react": "^1.4.1",
     "@heroicons/react": "^1.0.4",
+    "@mui/material": "^5.0.4",
     "@tailwindcss/forms": "^0.3.4",
     "axios": "^0.23.0",
     "formik": "^2.2.9",

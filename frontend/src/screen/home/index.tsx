@@ -1,6 +1,6 @@
 import React from 'react'
 import { RouteProps } from 'react-router-dom'
-import Banner from './Banner'
+import Banner from '~/screen/home/Banner'
 import ArticleList from '~/ArticleList'
 import TabList from '~/common/TabList'
 import { ITab, ITabType } from '~/reducers/articleList'

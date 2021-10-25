@@ -4,7 +4,6 @@ package user
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"log"
 	"strings"
 	"time"
@@ -12,6 +11,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/jt6677/conduit-fullstack/business/auth"
 	"github.com/jt6677/conduit-fullstack/foundation/database"
+	"github.com/lib/pq"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/api/trace"
 	"golang.org/x/crypto/bcrypt"
@@ -21,6 +21,9 @@ import (
 var (
 	// ErrNotFound is used when a specific User is requested but does not exist.
 	ErrNotFound = errors.New("not found")
+
+	// ErrAlreadyExists is used when username or email already existed.
+	ErrAlreadyExists = errors.New("username or email is not avaliable")
 
 	// ErrInvalidID occurs when an ID is not in a valid form.
 	ErrInvalidId = errors.New("Id is not in its proper form")
@@ -75,7 +78,11 @@ func (u User) Create(ctx context.Context, traceID string, nu NewUser, now time.T
 	)
 
 	if _, err = u.db.ExecContext(ctx, q, usr.Username, usr.Email, usr.PasswordHash, usr.CreatedAt, usr.UpdatedAt); err != nil {
-		fmt.Println("!!!!!", err)
+		// fmt.Printf("!!!!!%T,%v\n", err, err)
+		pqErr := err.(*pq.Error)
+		if pqErr.Code == "23505" {
+			return UserInfo{}, ErrAlreadyExists
+		}
 		return UserInfo{}, errors.Wrap(err, "inserting user")
 	}
 

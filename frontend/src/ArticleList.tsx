@@ -1,16 +1,16 @@
 import React from 'react'
-import ArticlePreview from './ArticlePreview'
+import ArticlePreview from '~/ArticlePreview'
 import {
   getArticles,
   getFeedArticles,
   getArticlesByTag,
   getArticlesByAuthor,
   getArticlesFavoritedBy,
-} from './api/ArticlesAPI'
-import useArticles from './context/articles'
-import { ITab, ITabType, ArticleListActionType } from './reducers/articleList'
-import { useFetch } from './context/FetchContext'
-import { IArticle } from './types'
+} from '~/api/ArticlesAPI'
+import useArticles from '~/context/articles'
+import { ITab, ITabType, ArticleListActionType } from '~/reducers/articleList'
+import { useFetch } from '~/context/FetchContext'
+import { IArticle } from '~/types'
 
 const loadArticles = (tab: ITab, page = 0) => {
   switch (tab.type) {

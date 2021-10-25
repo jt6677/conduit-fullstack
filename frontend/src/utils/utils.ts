@@ -1,4 +1,6 @@
+import axios, { AxiosError } from 'axios'
 export const APP_NAME = 'Go_Forward'
+
 // export const API_BASEURL = 'https://homebh.ga'
 export const API_BASEURL = 'http://localhost:3000/api'
 export const ALT_BIO = '用户什么也没有留下，系统只好补脑一些东东了'
@@ -14,4 +16,37 @@ export function getLocalStorageValue(key: string): string | null {
 
 export function setLocalStorage(key: string, value: string): void {
   localStorage.setItem(key, JSON.stringify(value))
+}
+
+//error type assertion middleware
+interface IErrorBase<T> {
+  error: Error | AxiosError<T>
+  type: 'axios-error' | 'stock-error'
+}
+
+interface IAxiosError<T> extends IErrorBase<T> {
+  error: AxiosError<T>
+  type: 'axios-error'
+}
+interface IStockError<T> extends IErrorBase<T> {
+  error: Error
+  type: 'stock-error'
+}
+
+export function axiosErrorHandler<T>(
+  callback: (err: IAxiosError<T> | IStockError<T>) => void
+) {
+  return (error: Error | AxiosError<T>) => {
+    if (axios.isAxiosError(error)) {
+      callback({
+        error: error,
+        type: 'axios-error',
+      })
+    } else {
+      callback({
+        error: error,
+        type: 'stock-error',
+      })
+    }
+  }
 }

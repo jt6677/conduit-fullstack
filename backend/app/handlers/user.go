@@ -31,9 +31,9 @@ func (ug userGroup) signup(ctx context.Context, w http.ResponseWriter, r *http.R
 		return errors.Wrap(err, "Decode error")
 	}
 
-	usr, err := ug.user.Create(ctx, v.TraceID, nu, v.Now)
+	_, err := ug.user.Create(ctx, v.TraceID, nu, v.Now)
 	if err != nil {
-		return errors.Wrapf(err, "User: %+v", &usr)
+		return web.NewRequestError(err, http.StatusBadRequest)
 	}
 	//Authenticate
 	signInUsr, err := ug.user.Authenticate(ctx, v.TraceID, nu.Email, nu.Password)

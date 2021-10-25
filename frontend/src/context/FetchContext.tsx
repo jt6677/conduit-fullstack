@@ -1,5 +1,7 @@
 import React, { createContext, useEffect } from 'react'
 import axios, { AxiosInstance } from 'axios'
+// import axios from 'axios'
+import { useHistory } from 'react-router-dom'
 
 type ProviderValue = { authAxios: AxiosInstance; publicAxios: AxiosInstance }
 type ContextDefaultValue = undefined
@@ -8,6 +10,7 @@ type ContextValue = ProviderValue | ContextDefaultValue
 const FetchContext = createContext<ContextValue>(undefined)
 
 function FetchProvider(props: React.PropsWithChildren<any>) {
+  let history = useHistory()
   const publicAxios = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
   })
@@ -21,8 +24,8 @@ function FetchProvider(props: React.PropsWithChildren<any>) {
           import.meta.env.VITE_API_URL_CSRF
         )
         if (data) {
-          // publicAxios.defaults.headers.common['X-CSRF-Token'] = data.csrfToken
-          // authAxios.defaults.headers.common['X-CSRF-Token'] = data.csrfToken
+          publicAxios.defaults.headers.common['X-CSRF-Token'] = data.csrfToken
+          authAxios.defaults.headers.common['X-CSRF-Token'] = data.csrfToken
         }
       } catch (err) {
         console.log('asd', err)
@@ -33,6 +36,27 @@ function FetchProvider(props: React.PropsWithChildren<any>) {
     getCsrfToken()
   }, [authAxios, publicAxios])
 
+  publicAxios.interceptors.response.use(
+    (response) => {
+      return response
+    },
+    (error) => {
+      if (axios.isAxiosError(error) && error.response) {
+        switch (error.response.status) {
+          // case 401:
+          //   navigate('/register')
+          //   break
+          // case 404:
+          case 403:
+            console.log('failed to get csrf token')
+            history.push('/')
+            break
+        }
+      }
+      return Promise.reject(error)
+      // if (error) return Promise.reject(error)
+    }
+  )
   authAxios.interceptors.response.use(
     (response) => {
       return response
@@ -42,7 +66,22 @@ function FetchProvider(props: React.PropsWithChildren<any>) {
       // if (code === 401 || code === 403) {
       //   console.log('error code', code)
       // }
+      if (axios.isAxiosError(error) && error.response) {
+        // console.log('aaafailed to get csrf token')
+        switch (error.response.status) {
+          // case 401:
+          //   //   navigate('/register')
+          //   history.push('/signin')
+          //   break
+          // case 404:
+          case 403:
+            console.log('not authorized,please retry')
+            history.push('/')
+            break
+        }
+      }
       return Promise.reject(error)
+      // if (error) return Promise.reject(error)
     }
   )
   return (
