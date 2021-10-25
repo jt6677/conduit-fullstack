@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios'
 import API from './APIUtils'
-import { IArticle } from '../types'
-import { API_BASEURL } from '../utils/utils'
+import { IArticle } from '~/types'
+import { API_BASEURL } from '~/utils/utils'
 
 const encode = encodeURIComponent
 

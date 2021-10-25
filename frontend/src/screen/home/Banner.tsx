@@ -1,5 +1,5 @@
 import React from 'react'
-import { APP_NAME } from '../../utils/utils'
+import { APP_NAME } from '~/utils/utils'
 
 // export default function Banner() {
 //   return (

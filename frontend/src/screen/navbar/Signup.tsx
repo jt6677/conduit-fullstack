@@ -2,11 +2,11 @@ import React from 'react'
 import { useHistory, Link, RouteProps, Redirect } from 'react-router-dom'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
-// import { Signup } from '../../api/AuthAPI'
-import { useAuth } from '../../context/auth'
-import { IErrors } from '../../types'
-import { AuthActionType } from '../../reducers/auth'
-import { useFetch } from '../../context/FetchContext'
+// import { Signup } from '~/api/AuthAPI'
+import { useAuth } from '~/context/auth'
+import { IErrors } from '~/types'
+import { AuthActionType } from '~/reducers/auth'
+import { useFetch } from '~/context/FetchContext'
 
 export default function Signup(_: RouteProps) {
   const [loading, setLoading] = React.useState(false)

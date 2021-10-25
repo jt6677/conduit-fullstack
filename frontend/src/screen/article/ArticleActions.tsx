@@ -1,12 +1,12 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { followProfile, unfollowProfile } from '../../api/ProfileAPI'
-import { IArticle } from '../../types'
-import { ArticleAction } from '../../reducers/article'
+import { followProfile, unfollowProfile } from '~/api/ProfileAPI'
+import { IArticle } from '~/types'
+import { ArticleAction } from '~/reducers/article'
 import DeleteButton from './DeleteButton'
-import FavoriteButton from '../../common/FavoriteButton'
-import { useAuth } from '../../context/auth'
-import { ArticleActionType } from '../../reducers/article'
+import FavoriteButton from '~/common/FavoriteButton'
+import { useAuth } from '~/context/auth'
+import { ArticleActionType } from '~/reducers/article'
 type ArticleActionsProps = {
   article: IArticle
   dispatch: React.Dispatch<ArticleAction>

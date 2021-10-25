@@ -5,12 +5,12 @@ import {
   articleReducer,
   initialState,
   ArticleActionType,
-} from '../../reducers/article'
-import { getArticle } from '../../api/ArticlesAPI'
+} from '~/reducers/article'
+import { getArticle } from '~/api/ArticlesAPI'
 import { AxiosResponse } from 'axios'
-import { IComment, IArticle } from '../../types'
-import { ALT_IMAGE_URL } from '../../utils/utils'
-import { useFetch } from '../../context/FetchContext'
+import { IComment, IArticle } from '~/types'
+import { ALT_IMAGE_URL } from '~/utils/utils'
+import { useFetch } from '~/context/FetchContext'
 
 export default function Article(_: RouteProps): JSX.Element | null {
   const [{ article, comments, loading, error }, dispatch] = React.useReducer(

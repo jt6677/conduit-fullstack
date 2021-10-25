@@ -3,8 +3,8 @@ import { BrowserRouter as Router } from 'react-router-dom'
 // import {ReactQueryConfigProvider} from 'react-query'
 import { FetchProvider } from './FetchContext'
 // import { FetchProvider as FetchsProvider } from './FetchsContext'
-import { AuthProvider } from '../context/auth'
-import { ArticlesProvider } from '../context/articles'
+import { AuthProvider } from '~/context/auth'
+import { ArticlesProvider } from '~/context/articles'
 // const queryConfig = {
 //   queries: {
 //     useErrorBoundary: true,

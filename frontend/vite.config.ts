@@ -1,10 +1,16 @@
 import { defineConfig } from 'vite'
+import { resolve } from 'path'
 import reactRefresh from '@vitejs/plugin-react-refresh'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [reactRefresh()],
   define: {
     'process.env': process.env,
+  },
+  resolve: {
+    alias: {
+      '~': resolve(__dirname, 'src'),
+    },
   },
   server: {
     proxy: {

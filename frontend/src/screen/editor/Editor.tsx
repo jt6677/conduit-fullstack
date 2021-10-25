@@ -1,9 +1,9 @@
 import React from 'react'
 import { useHistory, RouteProps, useParams } from 'react-router-dom'
-import { editorReducer, initalState } from '../../reducers/editor'
-import { getArticle, updateArticle } from '../../api/ArticlesAPI'
-import { EditorActionType } from '../../reducers/editor'
-import { useFetch } from '../../context/FetchContext'
+import { editorReducer, initalState } from '~/reducers/editor'
+import { getArticle, updateArticle } from '~/api/ArticlesAPI'
+import { EditorActionType } from '~/reducers/editor'
+import { useFetch } from '~/context/FetchContext'
 
 export default function Editor(_: RouteProps) {
   const [state, dispatch] = React.useReducer(editorReducer, initalState)

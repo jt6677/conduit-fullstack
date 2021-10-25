@@ -1,6 +1,6 @@
 import React from 'react'
-// import { getTags } from '../../api/TagsAPI'
-// import useArticles from '../../context/articles'
+// import { getTags } from '~/api/TagsAPI'
+// import useArticles from '~/context/articles'
 
 function Tags() {
   const [tags, setTags] = React.useState<string[]>([])

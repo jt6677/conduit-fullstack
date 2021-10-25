@@ -9,13 +9,13 @@ import {
   LinkProps,
   NavLink,
 } from 'react-router-dom'
-import { useAuth } from '../../context/auth'
-import { IUser } from '../../types'
-import { APP_NAME } from '../../utils/utils'
+import { useAuth } from '~/context/auth'
+import { IUser } from '~/types'
+import { APP_NAME } from '~/utils/utils'
 import { useHistory } from 'react-router-dom'
-import { AuthActionType } from '../../reducers/auth'
-import { useFetch } from '../../context/FetchContext'
-// import { Signout } from '../../api/AuthAPI'
+import { AuthActionType } from '~/reducers/auth'
+import { useFetch } from '~/context/FetchContext'
+// import { Signout } from '~/api/AuthAPI'
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ')
 }
