@@ -1,11 +1,11 @@
 import React from 'react'
-import { IArticle } from '../types'
-import { ArticleAction } from '../reducers/article'
+import { IArticle } from '~/types'
+import { ArticleAction } from '~/reducers/article'
 import {
   ArticleListAction,
   ArticleListActionType,
-} from '../reducers/articleList'
-import { favoriteArticle, unfavoriteArticle } from '../api/ArticlesAPI'
+} from '~/reducers/articleList'
+import { favoriteArticle, unfavoriteArticle } from '~/api/ArticlesAPI'
 
 type FavoriteButtonProps = {
   article: IArticle

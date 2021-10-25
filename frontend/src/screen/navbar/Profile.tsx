@@ -5,14 +5,10 @@ import {
   RouteProps,
   useParams,
 } from 'react-router-dom'
-import { IProfile } from '../../types'
-import { useAuth } from '../../context/auth'
-import { ALT_IMAGE_URL, ALT_BIO } from '../../utils/utils'
-import {
-  unfollowProfile,
-  followProfile,
-  getProfile,
-} from '../../api/ProfileAPI'
+import { IProfile } from '~/types'
+import { useAuth } from '~/context/auth'
+import { ALT_IMAGE_URL, ALT_BIO } from '~/utils/utils'
+import { unfollowProfile, followProfile, getProfile } from '~/api/ProfileAPI'
 // interface ProfileComponentProps extends RouteComponentProps {
 //   username: string
 // }

@@ -1,4 +1,4 @@
-import { IArticle, IComment } from '../types'
+import { IArticle, IComment } from '~/types'
 
 export enum ArticleActionType {
   FETCH_ARTICLE_BEGIN = 'FETCH_ARTICLE_BEGIN',

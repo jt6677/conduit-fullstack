@@ -1,7 +1,7 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
-import { IArticle } from '../../types'
-import { deleteArticle } from '../../api/ArticlesAPI'
+import { IArticle } from '~/types'
+import { deleteArticle } from '~/api/ArticlesAPI'
 
 export default function DeleteButton({ article }: { article: IArticle }) {
   let history = useHistory()

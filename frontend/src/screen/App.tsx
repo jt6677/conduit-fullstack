@@ -7,13 +7,13 @@ import Settings from './navbar/Settings'
 import Editor from './editor/Editor'
 import Profile from './navbar/Profile'
 import { Switch, Route } from 'react-router-dom'
-// import { getCurrentUser } from '../api/AuthAPI'
-import { useAuth } from '../context/auth'
-import { AuthActionType } from '../reducers/auth'
+// import { getCurrentUser } from '~/api/AuthAPI'
+import { useAuth } from '~/context/auth'
+import { AuthActionType } from '~/reducers/auth'
 import Article from './article'
-import { ArticlesProvider } from '../context/articles'
+import { ArticlesProvider } from '~/context/articles'
 import axios, { AxiosResponse } from 'axios'
-import { IUser } from '../types'
+import { IUser } from '~/types'
 
 function App() {
   const {

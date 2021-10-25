@@ -1,4 +1,4 @@
-import { IErrors } from '../types'
+import { IErrors } from '~/types'
 
 export enum EditorActionType {
   ADD_TAG = 'ADD_TAG',

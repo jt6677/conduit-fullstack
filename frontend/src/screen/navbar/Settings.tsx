@@ -1,8 +1,8 @@
 import React from 'react'
 import { useHistory, RouteProps } from 'react-router-dom'
-import { useAuth } from '../../context/auth'
-import { IErrors } from '../../types'
-import { AuthActionType } from '../../reducers/auth'
+import { useAuth } from '~/context/auth'
+import { IErrors } from '~/types'
+import { AuthActionType } from '~/reducers/auth'
 
 type Form = {
   username: string

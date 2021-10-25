@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { IArticle } from '../types'
-import { ALT_IMAGE_URL } from '../utils/utils'
+import { IArticle } from '~/types'
+import { ALT_IMAGE_URL } from '~/utils/utils'
 
 type ArticleAvatarProps = {
   article: IArticle

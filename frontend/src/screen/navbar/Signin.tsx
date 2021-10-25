@@ -1,8 +1,8 @@
 import React from 'react'
 import { useHistory, Link, RouteProps, Redirect } from 'react-router-dom'
-import { useAuth } from '../../context/auth'
-import { IComment, IErrors } from '../../types'
-import { AuthActionType } from '../../reducers/auth'
+import { useAuth } from '~/context/auth'
+import { IComment, IErrors } from '~/types'
+import { AuthActionType } from '~/reducers/auth'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 

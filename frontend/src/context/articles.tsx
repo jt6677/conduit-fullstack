@@ -4,7 +4,7 @@ import {
   initialState,
   ArticleListAction,
   ArticleListState,
-} from '../reducers/articleList'
+} from '~/reducers/articleList'
 
 type ArticleListContextProps = {
   state: ArticleListState

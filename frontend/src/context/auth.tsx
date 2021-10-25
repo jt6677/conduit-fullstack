@@ -5,9 +5,9 @@ import {
   AuthAction,
   AuthState,
   AuthActionType,
-} from '../reducers/auth'
-import { useFetch } from '../context/FetchContext'
-import { IUser } from '../types'
+} from '~/reducers/auth'
+import { useFetch } from '~/context/FetchContext'
+import { IUser } from '~/types'
 
 export function createCtx<ContextType>() {
   const ctx = React.createContext<ContextType | undefined>(undefined)

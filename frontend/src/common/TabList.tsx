@@ -1,11 +1,11 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import useArticles from '../context/articles'
+import useArticles from '~/context/articles'
 import {
   ITab,
   // ITabType,
   ArticleListActionType,
-} from '../reducers/articleList'
+} from '~/reducers/articleList'
 // const tabs = [
 //   { name: 'My Tab', href: '#', current: false },
 //   { name: 'Global Tab', href: '#', current: true },
