@@ -27,7 +27,7 @@ func API(build string, csrfAuthKey string, shutdown chan os.Signal, db *sqlx.DB,
 	//Register a subRouter with "/api" pathPrefix
 	//Create a csrf middleware and attach to that subRouter
 	api := app.Subrouter("/api")
-	csrfMiddleware := csrf.Protect([]byte(csrfAuthKey))
+	csrfMiddleware := csrf.Protect([]byte(csrfAuthKey), csrf.Secure(false), csrf.SameSite(csrf.SameSiteStrictMode), csrf.Path("/"))
 	api.Use(csrfMiddleware)
 	app.HandleSubRouter(api, http.MethodGet, "/csrf", CsrfTokenResponse)
 
@@ -47,7 +47,7 @@ func API(build string, csrfAuthKey string, shutdown chan os.Signal, db *sqlx.DB,
 		auth: a,
 	}
 	app.HandleSubRouter(api, http.MethodGet, "/me", ug.isLogin, mid.Authenticate(a))
-	app.HandleSubRouter(api, http.MethodPost, "/signup", ug.signup, mid.SkipCsrfCheck())
+	app.HandleSubRouter(api, http.MethodPost, "/signup", ug.signup)
 	app.HandleSubRouter(api, http.MethodPost, "/signin", ug.signin)
 	app.HandleSubRouter(api, http.MethodGet, "/signout", ug.signout, mid.Authenticate(a))
 	app.HandleSubRouter(api, http.MethodGet, "/profiles/{username:[a-zA-Z0-9]+}", ug.profile)
@@ -58,6 +58,7 @@ func API(build string, csrfAuthKey string, shutdown chan os.Signal, db *sqlx.DB,
 		articles: articles.New(log, db),
 		auth:     a,
 	}
+	// app.Handle(http.MethodPost, "/api/articles", ag.insertArticle, mid.Authenticate(a))
 	app.HandleSubRouter(api, http.MethodPost, "/articles", ag.insertArticle, mid.Authenticate(a))
 	app.HandleSubRouter(api, http.MethodGet, "/article/{slug:[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$}", ag.queryArticleWithSlug, mid.Authenticate(a))
 	app.HandleSubRouter(api, http.MethodGet, "/articles/all", ag.queryArticles)

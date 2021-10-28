@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
-import { resolve } from 'path'
 import reactRefresh from '@vitejs/plugin-react-refresh'
+import { resolve } from 'path'
+import { defineConfig } from 'vite'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [reactRefresh()],
@@ -16,7 +16,8 @@ export default defineConfig({
     proxy: {
       // '/': 'https://homebg.ga/',
       // '/api': 'https://homebg.ga/api',
-      '/api': 'http://localhost:8080',
+      '/api': 'http://localhost:8081',
+      // '/api': 'http://localhost:8080',
     },
   },
 })

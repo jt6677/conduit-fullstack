@@ -1,23 +1,28 @@
 import React from 'react'
-import { useHistory, RouteProps, useParams } from 'react-router-dom'
-import { editorReducer, initalState } from '~/reducers/editor'
-import { getArticle, updateArticle } from '~/api/ArticlesAPI'
-import { EditorActionType } from '~/reducers/editor'
-import { useFetch } from '~/context/FetchContext'
+import { RouteProps, useHistory, useParams } from 'react-router-dom'
+import { useArticles } from '~/context/articles'
+// import { getArticle, updateArticle } from '~/api/ArticlesAPI'
+import { EditorActionType, editorReducer, initalState } from '~/reducers/editor'
 
 export default function Editor(_: RouteProps) {
   const [state, dispatch] = React.useReducer(editorReducer, initalState)
   let history = useHistory()
   let { slug } = useParams<{ slug: string }>()
-  const authClient = useFetch()
+  const { getArticle, postArticle } = useArticles()
 
   React.useEffect(() => {
     let ignore = false
 
     const fetchArticle = async () => {
       try {
-        const payload = await getArticle(slug)
-        const { title, description, body, tagList } = payload.data
+        // export function getArticle(
+        //   slug: string
+        // ): Promise<AxiosResponse<IArticle>> {
+        //   return API.get<IArticle>(`${API_BASEURL}/article/${slug}`)
+        // }
+
+        const data = await getArticle(slug)
+        const { title, description, body, tagList } = data
         if (!ignore) {
           dispatch({
             type: EditorActionType.SET_FORM,
@@ -71,13 +76,10 @@ export default function Editor(_: RouteProps) {
       // const article = { title, description, body, tagList: state.tagList }
       let payload
       if (slug) {
-        payload = await updateArticle({ slug, ...article })
+        // payload = await updateArticle({ slug, ...article })
       } else {
-        payload = await authClient(`articles`, {
-          method: 'POST',
-          data: { ...article },
-        })
-        //@ts-ignore
+        payload = await postArticle({ ...article })
+        // @ts-ignore
         history.push(`/article/${payload}`)
       }
     } catch (error) {

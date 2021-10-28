@@ -1,14 +1,9 @@
 import React from 'react'
-import {
-  Link,
-  RouteComponentProps,
-  RouteProps,
-  useParams,
-} from 'react-router-dom'
-import { IProfile } from '~/types'
+import { Link, RouteProps, useParams } from 'react-router-dom'
+import { getProfile } from '~/api/ProfileAPI'
 import { useAuth } from '~/context/auth'
-import { ALT_IMAGE_URL, ALT_BIO } from '~/utils/utils'
-import { unfollowProfile, followProfile, getProfile } from '~/api/ProfileAPI'
+import { IProfile } from '~/types'
+import { ALT_BIO, ALT_IMAGE_URL } from '~/utils/utils'
 // interface ProfileComponentProps extends RouteComponentProps {
 //   username: string
 // }
@@ -30,7 +25,7 @@ export default function Profile(_: RouteProps): JSX.Element {
       try {
         const payload = await getProfile(username)
         if (!ignore) {
-          console.log(payload.data.image)
+          // console.log(payload.data.image)
           setProfile(payload.data)
         }
       } catch (error) {

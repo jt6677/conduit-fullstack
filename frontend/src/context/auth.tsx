@@ -1,23 +1,23 @@
-import React, { createContext, Dispatch, useContext, useReducer } from 'react'
-import {
-  authReducer,
-  initialState,
-  AuthAction,
-  AuthState,
-  AuthActionType,
-} from '~/reducers/auth'
+import React, { Dispatch, useReducer } from 'react'
 import { useFetch } from '~/context/FetchContext'
+import {
+  AuthAction,
+  AuthActionType,
+  authReducer,
+  AuthState,
+  initialState,
+} from '~/reducers/auth'
 import { IUser } from '~/types'
-
-export function createCtx<ContextType>() {
-  const ctx = React.createContext<ContextType | undefined>(undefined)
-  function useCtx() {
-    const c = React.useContext(ctx)
-    if (!c) throw new Error('useCtx must be inside a Provider with a value')
-    return c
-  }
-  return [useCtx, ctx.Provider] as const
-}
+import { createCtx } from '~/utils/utils'
+// export function createCtx<ContextType>() {
+//   const ctx = React.createContext<ContextType | undefined>(undefined)
+//   function useCtx() {
+//     const c = React.useContext(ctx)
+//     if (!c) throw new Error('useCtx must be inside a Provider with a value')
+//     return c
+//   }
+//   return [useCtx, ctx.Provider] as const
+// }
 
 type AuthContextProps = {
   state: AuthState

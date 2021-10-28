@@ -1,10 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import ArticleAvatar from '~/common/ArticleAvatar'
-import ArticleTags from '~/common/ArticleTags'
-import FavoriteButton from '~/common/FavoriteButton'
-import { IArticle } from '~/types'
 import { ArticleListAction } from '~/reducers/articleList'
+import { IArticle } from '~/types'
 import { ALT_IMAGE_URL } from '~/utils/utils'
 type ArticlePreviewProps = {
   article: IArticle

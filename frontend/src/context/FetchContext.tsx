@@ -1,5 +1,5 @@
-import React, { createContext, useEffect } from 'react'
 import axios, { AxiosInstance } from 'axios'
+import React, { createContext, useEffect } from 'react'
 // import axios from 'axios'
 import { useHistory } from 'react-router-dom'
 
@@ -62,10 +62,6 @@ function FetchProvider(props: React.PropsWithChildren<any>) {
       return response
     },
     (error) => {
-      // const code = error && error.response ? error.response.status : 0
-      // if (code === 401 || code === 403) {
-      //   console.log('error code', code)
-      // }
       if (axios.isAxiosError(error) && error.response) {
         // console.log('aaafailed to get csrf token')
         switch (error.response.status) {

@@ -1,16 +1,15 @@
-import React from 'react'
+import { AxiosResponse } from 'axios'
 import marked from 'marked'
-import { useParams, RouteProps, Link } from 'react-router-dom'
+import React from 'react'
+import { Link, RouteProps, useParams } from 'react-router-dom'
+import { useFetch } from '~/context/FetchContext'
 import {
+  ArticleActionType,
   articleReducer,
   initialState,
-  ArticleActionType,
 } from '~/reducers/article'
-import { getArticle } from '~/api/ArticlesAPI'
-import { AxiosResponse } from 'axios'
-import { IComment, IArticle } from '~/types'
+import { IArticle, IComment } from '~/types'
 import { ALT_IMAGE_URL } from '~/utils/utils'
-import { useFetch } from '~/context/FetchContext'
 
 export default function Article(_: RouteProps): JSX.Element | null {
   const [{ article, comments, loading, error }, dispatch] = React.useReducer(
@@ -56,11 +55,9 @@ export default function Article(_: RouteProps): JSX.Element | null {
         //   getArticle(slug),
         // ])
         function getArticle(slug: string): Promise<AxiosResponse<IArticle>> {
-          console.log('publicAxios')
           return publicAxios.get<IArticle>(`/article/${slug}`)
         }
         const payload = await getArticle(slug)
-
         if (!ignore) {
           dispatch({
             type: ArticleActionType.FETCH_ARTICLE_SUCCESS,
