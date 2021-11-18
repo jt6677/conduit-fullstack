@@ -30,9 +30,9 @@ func (ag articlesGroup) insertArticle(ctx context.Context, w http.ResponseWriter
 	}
 	u, ok := ctx.Value(auth.UserValues).(*auth.UserSession)
 	if !ok {
-		return web.NewRequestError(errors.New("UserValues missing from context"), http.StatusUnauthorized)
-
+		return web.NewRequestError(errors.New("User is not logged in"), http.StatusUnauthorized)
 	}
+
 	slug, err := ag.articles.InsertArticle(ctx, v.TraceID, na, u.UserId)
 	if err != nil {
 		return errors.Wrapf(err, "Inserting Article")
@@ -51,7 +51,15 @@ func (ag articlesGroup) queryArticleWithSlug(ctx context.Context, w http.Respons
 	}
 	vars := web.Params(r)
 	slug := vars["slug"]
-	article, err := ag.articles.QueryArticleBySlug(ctx, v.TraceID, slug)
+	//default user not signed in
+	var userId = -1
+	u, ok := ctx.Value(auth.UserValues).(*auth.UserSession)
+	//ok means user is signed in
+	if ok {
+		userId = u.UserId
+	}
+
+	article, err := ag.articles.QueryArticleBySlug(ctx, v.TraceID, slug, userId)
 	if err != nil {
 		return errors.Wrapf(err, "Query Article")
 	}
@@ -67,13 +75,34 @@ func (ag articlesGroup) queryArticles(ctx context.Context, w http.ResponseWriter
 	if !ok {
 		return web.NewShutdownError("web value missing from context")
 	}
+	//default user not signed in
+	var userId = -1
+	u, ok := ctx.Value(auth.UserValues).(*auth.UserSession)
+	//ok means user is signed in
+	if ok {
+		userId = u.UserId
+	}
 
-	articles, err := ag.articles.QueryArticles(ctx, v.TraceID)
+	articles, err := ag.articles.QueryArticles(ctx, v.TraceID, userId)
 	if err != nil {
 		return errors.Wrapf(err, "Query Articles")
 	}
 	return web.Respond(ctx, w, articles, http.StatusOK)
+	// if !ok {
+	// 	articles, err := ag.articles.QueryArticles(ctx, v.TraceID, u.UserId)
+	// 	if err != nil {
+	// 		return errors.Wrapf(err, "Query All Articles")
+	// 	}
+	// 	return web.Respond(ctx, w, articles, http.StatusOK)
+	// } else {
+	// 	articles, err := ag.articles.QueryArticles(ctx, v.TraceID, u.UserId)
+	// 	if err != nil {
+	// 		return errors.Wrapf(err, "Query Articles")
+	// 	}
+	// 	return web.Respond(ctx, w, articles, http.StatusOK)
+	// }
 }
+
 func (ag articlesGroup) queryArticlesByUser(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 
 	ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "handlers.article.QueryArticleByID")
@@ -83,15 +112,62 @@ func (ag articlesGroup) queryArticlesByUser(ctx context.Context, w http.Response
 	if !ok {
 		return web.NewShutdownError("web value missing from context")
 	}
-
-	if temp := ctx.Value(auth.UserValues); temp != nil {
-		if usr, ok := temp.(*auth.UserSession); ok {
-			articles, err := ag.articles.QueryArticlesByUser(ctx, v.TraceID, usr.UserId)
-			if err != nil {
-				return errors.Wrapf(err, "Query Articles By User")
-			}
-			return web.Respond(ctx, w, articles, http.StatusOK)
+	u, ok := ctx.Value(auth.UserValues).(*auth.UserSession)
+	if !ok {
+		return web.NewRequestError(errors.New("User is not logged in"), http.StatusUnauthorized)
+	} else {
+		articles, err := ag.articles.QueryArticlesByUser(ctx, v.TraceID, u.UserId, u.UserId)
+		if err != nil {
+			return errors.Wrapf(err, "Query Articles By User")
 		}
+		return web.Respond(ctx, w, articles, http.StatusOK)
 	}
-	return errors.New("Query Articles By User")
+}
+
+func (ag articlesGroup) favorite(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+	ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "handlers.article.QueryArticleByID")
+	defer span.End()
+
+	v, ok := ctx.Value(web.KeyValues).(*web.Values)
+	if !ok {
+		return web.NewShutdownError("web value missing from context")
+	}
+	vars := web.Params(r)
+	slug := vars["slug"]
+
+	usr, ok := ctx.Value(auth.UserValues).(*auth.UserSession)
+	if !ok {
+		return web.NewRequestError(errors.New("User is not logged in"), http.StatusUnauthorized)
+
+	}
+
+	favoritedArticle, err := ag.articles.AddFavorite(ctx, v.TraceID, usr.UserId, slug)
+	if err != nil {
+		return errors.Wrapf(err, "Add Favorite ")
+	}
+
+	return web.Respond(ctx, w, favoritedArticle, http.StatusOK)
+}
+func (ag articlesGroup) unfavorite(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+	ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "handlers.article.QueryArticleByID")
+	defer span.End()
+
+	v, ok := ctx.Value(web.KeyValues).(*web.Values)
+	if !ok {
+		return web.NewShutdownError("web value missing from context")
+	}
+	vars := web.Params(r)
+	slug := vars["slug"]
+
+	usr, ok := ctx.Value(auth.UserValues).(*auth.UserSession)
+	if !ok {
+		return web.NewRequestError(errors.New("User is not logged in"), http.StatusUnauthorized)
+	}
+
+	favoritedArticle, err := ag.articles.DeleteFavorite(ctx, v.TraceID, usr.UserId, slug)
+	if err != nil {
+		return errors.Wrapf(err, "Add Favorite ")
+	}
+
+	return web.Respond(ctx, w, favoritedArticle, http.StatusOK)
 }

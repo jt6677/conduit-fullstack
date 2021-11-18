@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios'
 import React from 'react'
+
 export const APP_NAME = 'Go_Forward'
 
 // export const API_BASEURL = 'https://homebh.ga'
@@ -19,7 +20,7 @@ export function setLocalStorage(key: string, value: string): void {
   localStorage.setItem(key, JSON.stringify(value))
 }
 
-//error type assertion middleware
+// error type assertion middleware
 interface IErrorBase<T> {
   error: Error | AxiosError<T>
   type: 'axios-error' | 'stock-error'
@@ -40,12 +41,12 @@ export function axiosErrorHandler<T>(
   return (error: Error | AxiosError<T>) => {
     if (axios.isAxiosError(error)) {
       callback({
-        error: error,
+        error,
         type: 'axios-error',
       })
     } else {
       callback({
-        error: error,
+        error,
         type: 'stock-error',
       })
     }

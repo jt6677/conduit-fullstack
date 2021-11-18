@@ -1,8 +1,9 @@
 import React from 'react'
+
+import ArticleAvatar from '~/common/ArticleAvatar'
+import { ArticleAction } from '~/reducers/article'
 import ArticleActions from '~/screen/article/ArticleActions'
 import { IArticle } from '~/types'
-import { ArticleAction } from '~/reducers/article'
-import ArticleAvatar from '~/common/ArticleAvatar'
 
 type ArticleMetaProps = {
   article: IArticle

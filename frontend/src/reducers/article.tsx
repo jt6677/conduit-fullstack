@@ -45,10 +45,7 @@ export const initialState: ArticleState = {
   error: null,
 }
 
-export function articleReducer(
-  state: ArticleState,
-  action: ArticleAction
-): ArticleState {
+export function articleReducer(state: ArticleState, action: ArticleAction): ArticleState {
   switch (action.type) {
     case ArticleActionType.FETCH_ARTICLE_BEGIN:
       return {
@@ -88,9 +85,7 @@ export function articleReducer(
     case ArticleActionType.DELETE_COMMENT:
       return {
         ...state,
-        comments: state.comments.filter(
-          (comment) => comment.id !== action.commentId
-        ),
+        comments: state.comments.filter((comment) => comment.id !== action.commentId),
       }
     case ArticleActionType.FOLLOW_AUTHOR:
     case ArticleActionType.UNFOLLOW_AUTHOR:

@@ -14,7 +14,6 @@ export type ArticleListAction =
   | {
       type: ArticleListActionType.FETCH_ARTICLES_SUCCESS
       payload: { articles: Array<IArticle> }
-      // payload: { articles: Array<IArticle>; articlesCount: number }
     }
   | { type: ArticleListActionType.FETCH_ARTICLES_ERROR; error: string }
   | {

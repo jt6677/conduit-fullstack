@@ -27,9 +27,13 @@ func API(build string, csrfAuthKey string, shutdown chan os.Signal, db *sqlx.DB,
 	//Register a subRouter with "/api" pathPrefix
 	//Create a csrf middleware and attach to that subRouter
 	api := app.Subrouter("/api")
+	// api := app.Subrouter("/api")
+	// csrfMiddleware := csrf.Protect([]byte(csrfAuthKey), csrf.Secure(false))
 	csrfMiddleware := csrf.Protect([]byte(csrfAuthKey), csrf.Secure(false), csrf.SameSite(csrf.SameSiteStrictMode), csrf.Path("/"))
 	api.Use(csrfMiddleware)
 	app.HandleSubRouter(api, http.MethodGet, "/csrf", CsrfTokenResponse)
+	app.Handle(http.MethodGet, "/api/csrf", CsrfTokenResponse)
+	app.Handle(http.MethodGet, "/csrf", CsrfTokenResponse)
 
 	// =========================================================================
 	// Register health check endpoint. This route is not authenticated.
@@ -61,14 +65,16 @@ func API(build string, csrfAuthKey string, shutdown chan os.Signal, db *sqlx.DB,
 	// app.Handle(http.MethodPost, "/api/articles", ag.insertArticle, mid.Authenticate(a))
 	app.HandleSubRouter(api, http.MethodPost, "/articles", ag.insertArticle, mid.Authenticate(a))
 	app.HandleSubRouter(api, http.MethodGet, "/article/{slug:[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$}", ag.queryArticleWithSlug, mid.Authenticate(a))
-	app.HandleSubRouter(api, http.MethodGet, "/articles/all", ag.queryArticles)
+	app.HandleSubRouter(api, http.MethodPost, "/article/{slug}/favorite", ag.favorite, mid.Authenticate(a))
+	app.HandleSubRouter(api, http.MethodDelete, "/article/{slug}/unfavorite", ag.unfavorite, mid.Authenticate(a))
+	app.HandleSubRouter(api, http.MethodGet, "/articles/all", ag.queryArticles, mid.Authenticate(a))
 	app.HandleSubRouter(api, http.MethodGet, "/articles/myfeed", ag.queryArticlesByUser, mid.Authenticate(a))
 
 	return app
 }
 
 func CsrfTokenResponse(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-	ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "handlers.user.update")
+	ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "handlers.csrf")
 	defer span.End()
 	type csrfResponse struct {
 		CsrfToken string `json:"csrfToken"`

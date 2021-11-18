@@ -1,6 +1,8 @@
-import API from './APIUtils'
 import { IProfile } from '~/types'
 import { API_BASEURL } from '~/utils/utils'
+
+import API from './APIUtils'
+
 type Profile = {
   profile: IProfile
 }

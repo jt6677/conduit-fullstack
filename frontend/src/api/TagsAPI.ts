@@ -1,9 +1,9 @@
-import API from './APIUtils';
+import API from './APIUtils'
 
 type Tags = {
-  tags: string[];
-};
+  tags: string[]
+}
 
 export function getTags() {
-  return API.get<Tags>('/tags');
+  return API.get<Tags>('/tags')
 }

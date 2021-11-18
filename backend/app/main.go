@@ -128,7 +128,7 @@ func run(log *log.Logger) error {
 	// if err != nil {
 	// 	return errors.Wrap(err, "delete datat in all tables")
 	// }
-	// fmt.Println("deleting finished")
+	// fmt.Println("all Tables dropped")
 	// // =========================================================================
 
 	defer func() {

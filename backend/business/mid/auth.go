@@ -40,8 +40,11 @@ func Authenticate(a *auth.Auth) web.Middleware {
 				return web.NewRequestError(errors.Wrap(err, "Cookie Invalid"), http.StatusUnauthorized)
 
 			}
+			//User is not logged in, just return early
 			if session.IsNew {
-				return web.NewRequestError(errors.New("User Not Logged In"), http.StatusUnauthorized)
+				// return web.NewRequestError(errors.New("User Not Logged In"), http.StatusUnauthorized)
+				// fmt.Println("a ...interface{} NOOOOOOO")
+				return handler(ctx, w, r)
 			}
 			session.Options = &sessions.Options{
 				Path:     "/",
@@ -53,10 +56,13 @@ func Authenticate(a *auth.Auth) web.Middleware {
 				return web.NewRequestError(errors.Wrap(err, "Saving Cookie Failed"), http.StatusUnauthorized)
 			}
 			// Retrieve our struct and type-assert it
-			val := session.Values["activeUser"]
-			user, ok := val.(*auth.UserSession)
+			// if no user, just return early
+			user, ok := session.Values["activeUser"].(*auth.UserSession)
 			if !ok {
-				return web.NewRequestError(errors.New("type assertion failed"), http.StatusUnauthorized)
+
+				// return web.NewRequestError(errors.New("type assertion failed"), http.StatusUnauthorized)
+				return handler(ctx, w, r)
+
 			}
 
 			// Add claims to the context so they can be retrieved later.

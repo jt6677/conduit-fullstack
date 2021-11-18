@@ -1,27 +1,21 @@
 import React from 'react'
 import { RouteProps, useHistory, useParams } from 'react-router-dom'
-import { useArticles } from '~/context/articles'
-// import { getArticle, updateArticle } from '~/api/ArticlesAPI'
+
+import { useArticles } from '~/context/ArticlesContext'
 import { EditorActionType, editorReducer, initalState } from '~/reducers/editor'
 
 export default function Editor(_: RouteProps) {
   const [state, dispatch] = React.useReducer(editorReducer, initalState)
-  let history = useHistory()
-  let { slug } = useParams<{ slug: string }>()
-  const { getArticle, postArticle } = useArticles()
+  const history = useHistory()
+  const { slug } = useParams<{ slug: string }>()
+  const { fetchArticle, postArticle } = useArticles()
 
   React.useEffect(() => {
     let ignore = false
 
-    const fetchArticle = async () => {
+    const getArticle = async () => {
       try {
-        // export function getArticle(
-        //   slug: string
-        // ): Promise<AxiosResponse<IArticle>> {
-        //   return API.get<IArticle>(`${API_BASEURL}/article/${slug}`)
-        // }
-
-        const data = await getArticle(slug)
+        const data = await fetchArticle(slug)
         const { title, description, body, tagList } = data
         if (!ignore) {
           dispatch({
@@ -34,9 +28,8 @@ export default function Editor(_: RouteProps) {
         console.log(error)
       }
     }
-
     if (slug) {
-      fetchArticle()
+      getArticle()
     }
     return () => {
       ignore = true
@@ -93,8 +86,6 @@ export default function Editor(_: RouteProps) {
     <div className="container pl-4 pr-4 mt-6 ml-auto mr-auto">
       <div className="grid grid-cols-4 ">
         <div className="col-span-2 col-start-2 ">
-          {/* <ListErrors errors={state.errors} /> */}
-
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <input
@@ -146,7 +137,9 @@ export default function Editor(_: RouteProps) {
                     <span className="tag-default tag-pill" key={tag}>
                       <i
                         className="ion-close-round"
-                        onClick={() =>
+                        role="button"
+                        onClick={() => {}}
+                        onKeyUp={() =>
                           dispatch({ type: EditorActionType.REMOVE_TAG, tag })
                         }
                       />
@@ -159,8 +152,7 @@ export default function Editor(_: RouteProps) {
 
             <button
               className="px-4 py-2 mb-4 text-lg font-medium text-white bg-green-500 rounded ml-80 "
-              type="submit"
-            >
+              type="submit">
               Publish Article
             </button>
           </form>

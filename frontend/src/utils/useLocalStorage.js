@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 const safelyParseJson = (parseString) => {
   try {
@@ -11,7 +11,7 @@ const safelyParseJson = (parseString) => {
  * An utility to quickly create hooks to access both Session Storage and Local Storage
  */
 const useLocalStorage = (storageKey, defaultValue) => {
-  const storage = window[`localStorage`]
+  const storage = window.localStorage
   //   const x = storage.getItem(storageKey)
   //   console.log(JSON.stringify(defaultValue))
   const [value, setValue] = useState(

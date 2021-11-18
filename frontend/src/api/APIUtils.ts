@@ -1,5 +1,5 @@
-import { Redirect } from 'react-router-dom'
 import axios from 'axios'
+import { Redirect } from 'react-router-dom'
 // import jwtDecode from 'jwt-decode'
 
 export const TOKEN_KEY = 'token'

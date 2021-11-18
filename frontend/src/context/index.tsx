@@ -1,10 +1,11 @@
 import * as React from 'react'
 import { BrowserRouter as Router } from 'react-router-dom'
+
+import { ArticlesProvider } from '~/context/ArticlesContext'
+// import { FetchProvider as FetchsProvider } from './FetchsContext'
+import { AuthProvider } from '~/context/AuthContext'
 // import {ReactQueryConfigProvider} from 'react-query'
 import { FetchProvider } from '~/context/FetchContext'
-// import { FetchProvider as FetchsProvider } from './FetchsContext'
-import { AuthProvider } from '~/context/auth'
-import { ArticlesProvider } from '~/context/articles'
 // const queryConfig = {
 //   queries: {
 //     useErrorBoundary: true,

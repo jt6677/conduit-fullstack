@@ -16,8 +16,8 @@ export default defineConfig({
     proxy: {
       // '/': 'https://homebg.ga/',
       // '/api': 'https://homebg.ga/api',
-      '/api': 'http://localhost:8081',
-      // '/api': 'http://localhost:8080',
+      // '/api': 'http://localhost:8081',
+      '/api': 'http://localhost:8080',
     },
   },
 })

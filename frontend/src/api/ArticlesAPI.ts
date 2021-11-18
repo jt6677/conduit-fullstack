@@ -1,7 +1,9 @@
 import { AxiosResponse } from 'axios'
-import API from './APIUtils'
+
 import { IArticle } from '~/types'
 import { API_BASEURL } from '~/utils/utils'
+
+import API from './APIUtils'
 
 const encode = encodeURIComponent
 
@@ -34,9 +36,7 @@ export function getArticles(page: number) {
 }
 
 export function getArticlesByAuthor(username: string, page: number) {
-  return API.get<Articles>(
-    `/articles?author=${encode(username)}&${limit(5, page)}`
-  )
+  return API.get<Articles>(`/articles?author=${encode(username)}&${limit(5, page)}`)
 }
 
 export function getArticlesByTag(
@@ -58,9 +58,7 @@ export function getArticlesFavoritedBy(
   username: string,
   page: number
 ): Promise<AxiosResponse<Articles>> {
-  return API.get<Articles>(
-    `/articles?favorited=${encode(username)}&${limit(5, page)}`
-  )
+  return API.get<Articles>(`/articles?favorited=${encode(username)}&${limit(5, page)}`)
 }
 
 export function getFeedArticles(): Promise<AxiosResponse<Articles>> {
@@ -71,9 +69,7 @@ export function getArticle(slug: string): Promise<AxiosResponse<IArticle>> {
   return API.get<IArticle>(`${API_BASEURL}/article/${slug}`)
 }
 
-export function unfavoriteArticle(
-  slug: string
-): Promise<AxiosResponse<Article>> {
+export function unfavoriteArticle(slug: string): Promise<AxiosResponse<Article>> {
   return API.delete<Article>(`/articles/${slug}/favorite`)
 }
 export function updateArticle(article: {

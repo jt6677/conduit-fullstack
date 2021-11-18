@@ -1,7 +1,8 @@
 import React from 'react'
 import { Link, RouteProps, useParams } from 'react-router-dom'
+
 import { getProfile } from '~/api/ProfileAPI'
-import { useAuth } from '~/context/auth'
+import { useAuth } from '~/context/AuthContext'
 import { IProfile } from '~/types'
 import { ALT_BIO, ALT_IMAGE_URL } from '~/utils/utils'
 // interface ProfileComponentProps extends RouteComponentProps {
@@ -13,7 +14,7 @@ import { ALT_BIO, ALT_IMAGE_URL } from '~/utils/utils'
 export default function Profile(_: RouteProps): JSX.Element {
   const [profile, setProfile] = React.useState<IProfile | null>(null)
   const [loading, setLoading] = React.useState(false)
-  let { username } = useParams<{ username: string }>()
+  const { username } = useParams<{ username: string }>()
   const {
     state: { user },
   } = useAuth()
@@ -80,8 +81,7 @@ export default function Profile(_: RouteProps): JSX.Element {
                         </h3>
                         <p className="text-sm text-gray-500">
                           <Link
-                            to={`/profiles/${profile.username}`}
-                          >{`@${profile.username}`}</Link>
+                            to={`/profiles/${profile.username}`}>{`@${profile.username}`}</Link>
                         </p>
                       </div>
                     </div>

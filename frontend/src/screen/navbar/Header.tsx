@@ -1,20 +1,22 @@
-import React, { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { MenuIcon, XIcon } from '@heroicons/react/outline'
 import { PlusIcon } from '@heroicons/react/solid'
+import React, { Fragment } from 'react'
 import {
+  Link,
+  LinkProps,
+  NavLink,
+  useHistory,
   // Route,
   // Link as RouterLink,
   useRouteMatch,
-  LinkProps,
-  NavLink,
 } from 'react-router-dom'
-import { useAuth } from '~/context/auth'
+
+import { useAuth } from '~/context/AuthContext'
+import { useFetch } from '~/context/FetchContext'
+import { AuthActionType } from '~/reducers/auth'
 import { IUser } from '~/types'
 import { APP_NAME } from '~/utils/utils'
-import { useHistory } from 'react-router-dom'
-import { AuthActionType } from '~/reducers/auth'
-import { useFetch } from '~/context/FetchContext'
 // import { Signout } from '~/api/AuthAPI'
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ')
@@ -33,8 +35,7 @@ const LoggedInView = ({
         <NavLink
           type="button"
           className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          to="/editor"
-        >
+          to="/editor">
           <PlusIcon className="w-5 h-5 mr-2 -ml-1" aria-hidden="true" />
           <span>New Post</span>
         </NavLink>
@@ -61,8 +62,7 @@ const LoggedInView = ({
             enterTo="transform opacity-100 scale-100"
             leave="transition ease-in duration-75"
             leaveFrom="transform opacity-100 scale-100"
-            leaveTo="transform opacity-0 scale-95"
-          >
+            leaveTo="transform opacity-0 scale-95">
             <Menu.Items className="absolute right-0 w-48 py-1 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
               <Menu.Item>
                 {({ active }) => (
@@ -71,8 +71,7 @@ const LoggedInView = ({
                     className={classNames(
                       active ? 'bg-gray-100' : '',
                       'block px-4 py-2 text-sm text-gray-700'
-                    )}
-                  >
+                    )}>
                     Your Profile
                   </NavLink>
                 )}
@@ -84,23 +83,22 @@ const LoggedInView = ({
                     className={classNames(
                       active ? 'bg-gray-100' : '',
                       'block px-4 py-2 text-sm text-gray-700'
-                    )}
-                  >
+                    )}>
                     Settings
                   </NavLink>
                 )}
               </Menu.Item>
               <Menu.Item>
                 {({ active }) => (
-                  <a
+                  <NavLink
+                    to="/"
                     className={classNames(
                       active ? 'bg-gray-100' : '',
                       'block px-4 py-2 text-sm text-gray-700 cursor-pointer'
                     )}
-                    onClick={handleSignout}
-                  >
+                    onClick={handleSignout}>
                     Sign out
-                  </a>
+                  </NavLink>
                 )}
               </Menu.Item>
             </Menu.Items>
@@ -134,23 +132,20 @@ const LoggedInMenuView = ({
       <div className="mt-3 space-y-1">
         <NavLink
           to="/profile"
-          className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100 sm:px-6"
-        >
+          className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100 sm:px-6">
           Your Profile
         </NavLink>
         <NavLink
           to="/settings"
-          className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100 sm:px-6"
-        >
+          className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100 sm:px-6">
           Settings
         </NavLink>
-        <a
-          // to="/signout"
+        <NavLink
+          to="/signout"
           className="block px-4 py-2 text-base font-medium text-gray-500 cursor-pointer hover:text-gray-800 hover:bg-gray-100 sm:px-6"
-          onClick={handleSignout}
-        >
+          onClick={handleSignout}>
           Sign out
-        </a>
+        </NavLink>
       </div>
     </div>
   )
@@ -161,7 +156,7 @@ export default function Header() {
     dispatch,
     Signout,
   } = useAuth()
-  let history = useHistory()
+  const history = useHistory()
   const handleSignout = (): void => {
     const signout = async () => {
       try {
@@ -209,40 +204,33 @@ export default function Header() {
                   />
                   <div className="flex lg:ml-0">
                     <NavLink to="/">
-                      <span className="font-bold text-indigo-600">
-                        {APP_NAME}
-                      </span>
+                      <span className="font-bold text-indigo-600">{APP_NAME}</span>
                     </NavLink>
                   </div>
                 </div>
                 <div className="hidden md:ml-6 md:flex md:space-x-8">
                   <NavLink
                     to="/"
-                    className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 border-b-2 border-indigo-500"
-                  >
+                    className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 border-b-2 border-indigo-500">
                     Home
                   </NavLink>
                   {!user ? (
                     <>
                       <NavLink
                         to="/signin"
-                        className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:border-gray-300 hover:text-gray-700"
-                      >
+                        className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:border-gray-300 hover:text-gray-700">
                         Sign In
                       </NavLink>
                       <NavLink
                         to="/signup"
-                        className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:border-gray-300 hover:text-gray-700"
-                      >
+                        className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:border-gray-300 hover:text-gray-700">
                         Sign Up
                       </NavLink>
                     </>
                   ) : null}
                 </div>
               </div>
-              {user ? (
-                <LoggedInView user={user} handleSignout={handleSignout} />
-              ) : null}
+              {user ? <LoggedInView user={user} handleSignout={handleSignout} /> : null}
             </div>
           </div>
 
@@ -251,30 +239,25 @@ export default function Header() {
               {/* Current: "bg-indigo-50 border-indigo-500 text-indigo-700", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" */}
               <NavLink
                 to="/"
-                className="block py-2 pl-3 pr-4 text-base font-medium text-indigo-700 border-l-4 border-indigo-500 bg-indigo-50 sm:pl-5 sm:pr-6"
-              >
+                className="block py-2 pl-3 pr-4 text-base font-medium text-indigo-700 border-l-4 border-indigo-500 bg-indigo-50 sm:pl-5 sm:pr-6">
                 Home
               </NavLink>
               {!user ? (
                 <>
                   <NavLink
                     to="/signin"
-                    className="block py-2 pl-3 pr-4 text-base font-medium text-indigo-700 border-l-4 border-indigo-500 bg-indigo-50 sm:pl-5 sm:pr-6"
-                  >
+                    className="block py-2 pl-3 pr-4 text-base font-medium text-indigo-700 border-l-4 border-indigo-500 bg-indigo-50 sm:pl-5 sm:pr-6">
                     Sign In
                   </NavLink>
                   <NavLink
                     to="/signup"
-                    className="block py-2 pl-3 pr-4 text-base font-medium text-indigo-700 border-l-4 border-indigo-500 bg-indigo-50 sm:pl-5 sm:pr-6"
-                  >
+                    className="block py-2 pl-3 pr-4 text-base font-medium text-indigo-700 border-l-4 border-indigo-500 bg-indigo-50 sm:pl-5 sm:pr-6">
                     Sign Up
                   </NavLink>
                 </>
               ) : null}
             </div>
-            {user ? (
-              <LoggedInMenuView user={user} handleSignout={handleSignout} />
-            ) : null}
+            {user ? <LoggedInMenuView user={user} handleSignout={handleSignout} /> : null}
           </Disclosure.Panel>
         </>
       )}

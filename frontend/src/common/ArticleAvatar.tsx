@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+
 import { IArticle } from '~/types'
 import { ALT_IMAGE_URL } from '~/utils/utils'
 
@@ -8,7 +9,7 @@ type ArticleAvatarProps = {
 }
 
 export default function ArticleAvatar({
-  //@ts-ignore
+  // @ts-ignore
   article: { author, createdAt },
 }: ArticleAvatarProps) {
   return (
@@ -23,12 +24,10 @@ export default function ArticleAvatar({
 
       <div
         className="inline-block leading-4 align-middle "
-        style={{ margin: '0 1.5rem 0 0.3rem' }}
-      >
+        style={{ margin: '0 1.5rem 0 0.3rem' }}>
         <Link
           className="block font-medium text-green-500 hover:underline"
-          to={`/${author.username}`}
-        >
+          to={`/${author.username}`}>
           {author.username}
         </Link>
         <span className="block text-xs font-light text-gray-500">

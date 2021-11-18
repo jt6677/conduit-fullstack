@@ -87,7 +87,9 @@ ALTER SEQUENCE darwin_migrations_id_seq	RESTART;
 const dropAll = `
 DROP TABLE IF EXISTS articles;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS favorites;
 DROP TABLE IF EXISTS darwin_migrations;
 DROP SEQUENCE IF EXISTS users_user_id_seq		CASCADE;
+DROP SEQUENCE IF EXISTS articles_article_id_seq		CASCADE;
 DROP SEQUENCE IF EXISTS darwin_migrations_id_seq	CASCADE;
 `

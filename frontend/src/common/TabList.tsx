@@ -1,5 +1,6 @@
 import React from 'react'
-import { useArticles } from '~/context/articles'
+
+import { useArticles } from '~/context/ArticlesContext'
 import {
   // ITabType,
   ArticleListActionType,
@@ -28,8 +29,9 @@ function Tab({ isSelected, onClick, children }: TabProps) {
         isSelected ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700',
         'group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10'
       )}
-      onClick={onClick}
-    >
+      role="button"
+      onKeyUp={onClick}
+      onClick={onClick}>
       {children}
 
       <span
@@ -55,8 +57,7 @@ export default function TabList({ data }: TabsListProps): JSX.Element {
     <Tab
       key={tab.type}
       isSelected={selectedTab.type === tab.type}
-      onClick={() => handleClick(tab)}
-    >
+      onClick={() => handleClick(tab)}>
       {tab.label}
     </Tab>
   ))
@@ -77,10 +78,7 @@ export default function TabList({ data }: TabsListProps): JSX.Element {
           {data.map((tab) => (
             <option
               key={tab.label}
-              onClick={() =>
-                dispatch({ type: ArticleListActionType.SET_TAB, tab })
-              }
-            >
+              onClick={() => dispatch({ type: ArticleListActionType.SET_TAB, tab })}>
               {tab.label}
             </option>
           ))}
@@ -89,50 +87,9 @@ export default function TabList({ data }: TabsListProps): JSX.Element {
       <div className="hidden sm:block">
         <div
           className="relative z-0 flex divide-x divide-gray-200 rounded-lg shadow"
-          aria-label="Tabs"
-        >
-          {/* {data.map((tab) => (
-            <Tab
-              key={tab.type}
-              isSelected={selectedTab.type === tab.type}
-              onClick={() =>
-                dispatch({ type: ArticleListActionType.SET_TAB, tab })
-              }
-            >
-              {tab.label}
-            </Tab>
-          ))} */}
+          aria-label="Tabs">
           {tabs}
         </div>
-        {/* <nav
-          className="relative z-0 flex divide-x divide-gray-200 rounded-lg shadow"
-          aria-label="Tabs"
-        >
-          {tabs.map((tab, tabIdx) => (
-            <NavLink
-              key={tab.name}
-              to={tab.href}
-              className={classNames(
-                tab.current
-                  ? 'text-gray-900'
-                  : 'text-gray-500 hover:text-gray-700',
-                tabIdx === 0 ? 'rounded-l-lg' : '',
-                tabIdx === tabs.length - 1 ? 'rounded-r-lg' : '',
-                'group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10'
-              )}
-              aria-current={tab.current ? 'page' : undefined}
-            >
-              <span>{tab.name}</span>
-              <span
-                aria-hidden="true"
-                className={classNames(
-                  tab.current ? 'bg-indigo-500' : 'bg-transparent',
-                  'absolute inset-x-0 bottom-0 h-0.5'
-                )}
-              />
-            </NavLink>
-          ))}
-        </nav> */}
       </div>
     </div>
   )

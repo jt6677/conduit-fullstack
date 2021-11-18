@@ -1,19 +1,16 @@
 import React from 'react'
-import Header from '~/screen/navbar/Header'
+import { Route, Switch } from 'react-router-dom'
+
+import { ArticlesProvider } from '~/context/ArticlesContext'
+import { useAuth } from '~/context/AuthContext'
+import Article from '~/screen/article'
+import Editor from '~/screen/editor/Editor'
 import Home from '~/screen/home'
+import Header from '~/screen/navbar/Header'
+import Profile from '~/screen/navbar/Profile'
+import Settings from '~/screen/navbar/Settings'
 import Signin from '~/screen/navbar/Signin'
 import Signup from '~/screen/navbar/Signup'
-import Settings from '~/screen/navbar/Settings'
-import Editor from '~/screen/editor/Editor'
-import Profile from '~/screen/navbar/Profile'
-import { Switch, Route } from 'react-router-dom'
-// import { getCurrentUser } from '~/api/AuthAPI'
-import { useAuth } from '~/context/auth'
-import { AuthActionType } from '~/reducers/auth'
-import Article from '~/screen/article'
-import { ArticlesProvider } from '~/context/articles'
-import axios, { AxiosResponse } from 'axios'
-import { IUser } from '~/types'
 
 function App() {
   const {

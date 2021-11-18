@@ -48,10 +48,7 @@ export const initalState: EditorState = {
   loading: false,
 }
 
-export function editorReducer(
-  state: EditorState,
-  action: EditorAction
-): EditorState {
+export function editorReducer(state: EditorState, action: EditorAction): EditorState {
   switch (action.type) {
     case EditorActionType.ADD_TAG:
       return {

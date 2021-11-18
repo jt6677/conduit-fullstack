@@ -1,7 +1,8 @@
 import { AxiosResponse } from 'axios'
-import API, { TOKEN_KEY, setToken } from './APIUtils'
-import { IUser } from '../types'
+
 import { useFetch } from '../context/FetchContext'
+import { IUser } from '../types'
+import API, { setToken, TOKEN_KEY } from './APIUtils'
 
 export function GetUser(): Promise<IUser> {
   const { authAxios } = useFetch()

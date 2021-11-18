@@ -53,9 +53,20 @@ CREATE TABLE articles (
 	body			TEXT,
 	created_at		TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at		TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      favorites_count	INTEGER NOT NULL DEFAULT 0,
 	PRIMARY KEY (article_id),
 	FOREIGN KEY (author_id) REFERENCES users(user_id) ON DELETE CASCADE
+);`,
+	},
+	{
+		Version:     3,
+		Description: "Add favorites",
+		Script: `
+CREATE TABLE favorites (
+	article_id		INTEGER NOT NULL,
+	user_id		INTEGER NOT NULL,
+	PRIMARY KEY (article_id,user_id),
+	FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE,
+	FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );`,
 	},
 }

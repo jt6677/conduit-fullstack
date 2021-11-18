@@ -10,7 +10,7 @@ type ContextValue = ProviderValue | ContextDefaultValue
 const FetchContext = createContext<ContextValue>(undefined)
 
 function FetchProvider(props: React.PropsWithChildren<any>) {
-  let history = useHistory()
+  const history = useHistory()
   const publicAxios = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
   })
@@ -28,7 +28,7 @@ function FetchProvider(props: React.PropsWithChildren<any>) {
           authAxios.defaults.headers.common['X-CSRF-Token'] = data.csrfToken
         }
       } catch (err) {
-        console.log('asd', err)
+        console.log('csrf error', err)
         //   window.location.reload()
         //   return Promise.reject('shit happened')
       }
@@ -42,19 +42,22 @@ function FetchProvider(props: React.PropsWithChildren<any>) {
     },
     (error) => {
       if (axios.isAxiosError(error) && error.response) {
-        switch (error.response.status) {
-          // case 401:
-          //   navigate('/register')
-          //   break
-          // case 404:
-          case 403:
-            console.log('failed to get csrf token')
-            history.push('/')
-            break
-        }
+        console.log('failed to get csrf token')
+        //   switch (error.response.status) {
+        //     // case 401:
+        //     //   navigate('/register')
+        //     //   break
+        //     // case 404:
+        //     case 403:
+        //       history.push('/')
+        //       break
+        //     default:
+        //       history.push('/')
+        //       break
+        //   }
+        // }
+        return Promise.reject(error)
       }
-      return Promise.reject(error)
-      // if (error) return Promise.reject(error)
     }
   )
   authAxios.interceptors.response.use(
@@ -64,6 +67,7 @@ function FetchProvider(props: React.PropsWithChildren<any>) {
     (error) => {
       if (axios.isAxiosError(error) && error.response) {
         // console.log('aaafailed to get csrf token')
+        // console.log('not authorized,please retry')
         switch (error.response.status) {
           // case 401:
           //   //   navigate('/register')
@@ -74,10 +78,12 @@ function FetchProvider(props: React.PropsWithChildren<any>) {
             console.log('not authorized,please retry')
             history.push('/')
             break
+          default:
+            history.push('/')
+            break
         }
       }
       return Promise.reject(error)
-      // if (error) return Promise.reject(error)
     }
   )
   return (
@@ -97,4 +103,4 @@ function useFetch(): { authAxios: AxiosInstance; publicAxios: AxiosInstance } {
   }
   return context
 }
-export { FetchContext, useFetch, FetchProvider }
+export { FetchContext, FetchProvider, useFetch }

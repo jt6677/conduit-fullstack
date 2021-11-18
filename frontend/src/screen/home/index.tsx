@@ -1,9 +1,11 @@
 import React from 'react'
 import { RouteProps } from 'react-router-dom'
-import Banner from '~/screen/home/Banner'
-import ArticleList from '~/ArticleList'
+
 import TabList from '~/common/TabList'
 import { ITab, ITabType } from '~/reducers/articleList'
+import ArticleList from '~/screen/article/ArticleList'
+import Banner from '~/screen/home/Banner'
+
 export default function Home(_: RouteProps): JSX.Element {
   const tabsData: Array<ITab> = [
     { type: ITabType.FEED, label: 'Your Feed' },
