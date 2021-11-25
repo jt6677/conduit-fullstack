@@ -2,15 +2,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { MenuIcon, XIcon } from '@heroicons/react/outline'
 import { PlusIcon } from '@heroicons/react/solid'
 import React, { Fragment } from 'react'
-import {
-  Link,
-  LinkProps,
-  NavLink,
-  useHistory,
-  // Route,
-  // Link as RouterLink,
-  useRouteMatch,
-} from 'react-router-dom'
+import { NavLink, useHistory, useRouteMatch } from 'react-router-dom'
 
 import { useAuth } from '~/context/AuthContext'
 import { useFetch } from '~/context/FetchContext'

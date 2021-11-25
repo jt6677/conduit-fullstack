@@ -19,7 +19,6 @@ export default function ArticlePreview({
   const {
     state: { user },
   } = useAuth()
-  console.log(user)
   return (
     <div
       key={article.title}

@@ -103,4 +103,5 @@ function useFetch(): { authAxios: AxiosInstance; publicAxios: AxiosInstance } {
   }
   return context
 }
+
 export { FetchContext, FetchProvider, useFetch }

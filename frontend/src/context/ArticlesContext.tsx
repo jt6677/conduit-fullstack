@@ -17,10 +17,11 @@ type ArticleListContextProps = {
   fetchAllArticles: () => Promise<IArticle[]>
   fetchMyArticles: () => Promise<IArticle[]>
   postArticle: (data: any) => Promise<string>
+  updateArticle: (slug: string, data: any) => Promise<string>
+  deleteArticle: (slug: string) => Promise<string>
   favoriteArticle: (slug: string) => Promise<IArticle>
   unfavoriteArticle: (slug: string) => Promise<IArticle>
 }
-
 export const [useArticles, CtxProvider] = createCtx<ArticleListContextProps>()
 
 export function ArticlesProvider(props: React.PropsWithChildren<any>): JSX.Element {
@@ -45,6 +46,14 @@ export function ArticlesProvider(props: React.PropsWithChildren<any>): JSX.Eleme
       .post<string>(`/articles`, { ...data })
       .then((response) => response.data)
   }
+  function updateArticle(slug: string, data: any): Promise<string> {
+    return authAxios
+      .put<string>(`/article/${slug}`, { ...data })
+      .then((response) => response.data)
+  }
+  function deleteArticle(slug: string): Promise<string> {
+    return authAxios.delete<string>(`/article/${slug}`).then((response) => response.data)
+  }
   function favoriteArticle(slug: string): Promise<IArticle> {
     return authAxios
       .post<IArticle>(`/article/${slug}/favorite`)
@@ -65,6 +74,8 @@ export function ArticlesProvider(props: React.PropsWithChildren<any>): JSX.Eleme
         fetchAllArticles,
         fetchMyArticles,
         postArticle,
+        updateArticle,
+        deleteArticle,
         favoriteArticle,
         unfavoriteArticle,
       }}

@@ -3,7 +3,7 @@ import { Route, Switch } from 'react-router-dom'
 
 import { ArticlesProvider } from '~/context/ArticlesContext'
 import { useAuth } from '~/context/AuthContext'
-import Article from '~/screen/article'
+import Article from '~/screen/article/ArticleView'
 import Editor from '~/screen/editor/Editor'
 import Home from '~/screen/home'
 import Header from '~/screen/navbar/Header'

@@ -15,7 +15,6 @@ export default function Signin(_: RouteProps) {
   const [isSuccess, setIsSuccess] = React.useState<string | null>()
   const [isError, setIsError] = React.useState<string | null>()
   const [redirectOnLogin, setRedirectOnLogin] = React.useState(false)
-  const [isLoading, setIsLoading] = React.useState(false)
   const {
     state: { user },
     dispatch,

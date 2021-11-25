@@ -1,4 +1,5 @@
 import '~/index.scss'
+import 'highlight.js/styles/github.css'
 
 import React from 'react'
 import { render } from 'react-dom'
