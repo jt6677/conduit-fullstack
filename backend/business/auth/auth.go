@@ -6,6 +6,7 @@ import (
 
 	gorillaSession "github.com/gorilla/sessions"
 	"github.com/jmoiron/sqlx"
+	"github.com/jt6677/conduit-fullstack/business/data/schema"
 )
 
 // These are the expected values for Claims.Roles.
@@ -15,9 +16,12 @@ const (
 )
 
 type UserSession struct {
-	SessionId int    `json:"session_id"` // Unique identifier.
-	Username  string `json:"username"`
-	UserId    int    `json:"user_id"`
+	SessionId int                `json:"session_id"` // Unique identifier.
+	Username  string             `json:"username"`
+	UserId    string             `json:"user_id"`
+	Email     string             `json:"email,omitempty"`
+	Bio       *schema.NullString `json:"bio"`
+	Image     *schema.NullString `json:"image"`
 }
 
 // ctxKey represents the type of value for the context key.

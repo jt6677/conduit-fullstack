@@ -81,29 +81,33 @@ func (ug userGroup) signin(ctx context.Context, w http.ResponseWriter, r *http.R
 func (ug userGroup) isLogin(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 	ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "handlers.user.update")
 	defer span.End()
-	v, ok := ctx.Value(web.KeyValues).(*web.Values)
-	if !ok {
-		return web.NewShutdownError("web value missing from context")
-	}
+	// v, ok := ctx.Value(web.KeyValues).(*web.Values)
+	// if !ok {
+	// 	return web.NewShutdownError("web value missing from context")
+	// }
 
 	if temp := ctx.Value(auth.UserValues); temp != nil {
 		if usr, ok := temp.(*auth.UserSession); ok {
-			trustedUserInfo, err := ug.user.QueryById(ctx, v.TraceID, usr.UserId)
-			if err != nil {
-				return errors.Wrapf(err, "Query User By Id")
-			}
-
-			return web.Respond(ctx, w, trustedUserInfo, http.StatusOK)
+			return web.Respond(ctx, w, usr, http.StatusOK)
 		}
 	}
 	return web.Respond(ctx, w, nil, http.StatusUnauthorized)
 }
 
 //Sessions
-func (ug userGroup) signInWithSession(ctx context.Context, w http.ResponseWriter, r *http.Request, usr *auth.UserSession) error {
+func (ug userGroup) signInWithSession(ctx context.Context, w http.ResponseWriter, r *http.Request, usr *user.UserInfo) error {
+
+	userSession := auth.UserSession{
+		UserId:   usr.Id,
+		Username: usr.Username,
+		Email:    usr.Email,
+		Bio:      usr.Bio,
+		Image:    usr.Image,
+	}
+
 	session, _ := ug.auth.SessionStore.Get(r, "session")
 
-	session.Values["activeUser"] = usr
+	session.Values["activeUser"] = userSession
 	err := session.Save(r, w)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

@@ -8,12 +8,12 @@ require (
 	github.com/go-playground/locales v0.13.0
 	github.com/go-playground/universal-translator v0.17.0
 	github.com/google/go-cmp v0.5.2 // indirect
+	github.com/google/uuid v1.3.0
 	github.com/gorilla/csrf v1.7.1
 	github.com/gorilla/mux v1.6.2
 	github.com/gorilla/sessions v1.2.1
 	github.com/gosimple/slug v1.11.0
 	github.com/jmoiron/sqlx v1.2.0
-	github.com/justinas/nosurf v1.1.1
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/lib/pq v1.8.0
 	github.com/openzipkin/zipkin-go v0.2.4 // indirect

@@ -15,7 +15,7 @@ type NullInt32 struct {
 // MarshalJSON for NullInt64
 func (ni *NullInt32) MarshalJSON() ([]byte, error) {
 	if !ni.Valid {
-		return []byte("null"), nil
+		return []byte(""), nil
 	}
 	return json.Marshal(ni.Int32)
 }
@@ -35,7 +35,7 @@ type NullString struct {
 // MarshalJSON for NullString
 func (ns *NullString) MarshalJSON() ([]byte, error) {
 	if !ns.Valid {
-		return []byte("null"), nil
+		return []byte(""), nil
 	}
 	return json.Marshal(ns.String)
 }
@@ -55,7 +55,7 @@ type NullTime struct {
 // MarshalJSON for NullTime
 func (nt *NullTime) MarshalJSON() ([]byte, error) {
 	if !nt.Valid {
-		return []byte("null"), nil
+		return []byte(""), nil
 	}
 	val := fmt.Sprintf("\"%s\"", nt.Time.Format(time.RFC3339))
 	return []byte(val), nil
@@ -66,4 +66,11 @@ func (nt *NullTime) UnmarshalJSON(b []byte) error {
 	err := json.Unmarshal(b, &nt.Time)
 	nt.Valid = (err == nil)
 	return err
+}
+
+func CreateNullTime(v time.Time) *NullTime {
+	var nt NullTime
+	nt.Valid = true
+	nt.Time = v
+	return &nt
 }

@@ -29,7 +29,7 @@ var migrations = []darwin.Migration{
 		Description: "Add users",
 		Script: `
 CREATE TABLE users (
-	user_id       serial NOT NULL,
+	user_id       UUID,
 	username      TEXT UNIQUE NOT NULL,
 	email         TEXT UNIQUE NOT NULL,
 	password_hash TEXT NOT NULL,
@@ -45,8 +45,8 @@ CREATE TABLE users (
 		Description: "Add articles",
 		Script: `
 CREATE TABLE articles (
-	article_id		serial NOT NULL,
-	author_id		INTEGER NOT NULL,
+	article_id		UUID,
+	author_id		UUID,
 	slug			TEXT UNIQUE NOT NULL,
 	title			TEXT UNIQUE NOT NULL,
 	description		TEXT NOT NULL,
@@ -62,11 +62,102 @@ CREATE TABLE articles (
 		Description: "Add favorites",
 		Script: `
 CREATE TABLE favorites (
-	article_id		INTEGER NOT NULL,
-	user_id		INTEGER NOT NULL,
+	article_id		UUID,
+	user_id		UUID,
 	PRIMARY KEY (article_id,user_id),
 	FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE,
 	FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );`,
+	},
+	{
+		Version:     4,
+		Description: "Add comments",
+		Script: `
+CREATE TABLE comments (
+	comment_id		UUID,
+	commenter_id	UUID,
+	article_id		UUID,
+	parent_id		TEXT,
+	body			TEXT,
+	created_at		TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	updated_at		TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	deleted_at		TIMESTAMP DEFAULT NULL,
+	deleted           BOOLEAN DEFAULT FALSE,
+	PRIMARY KEY (comment_id),
+	FOREIGN KEY (commenter_id) REFERENCES users(user_id) ON DELETE CASCADE,
+	FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE
+);`,
+	},
+	{
+		Version:     5,
+		Description: "Create procedure automatically updating updated_at field",
+		Script: `
+CREATE OR REPLACE FUNCTION set_updated_at()
+	RETURNS TRIGGER AS $$
+	BEGIN
+	NEW.updated_at = now();
+	RETURN NEW;
+	END;
+	$$ LANGUAGE plpgsql;	
+		`,
+	},
+	{
+		Version:     6,
+		Description: "Add set_updated_at_articles trigger to articles table",
+		Script: `
+CREATE TRIGGER set_updated_at_articles
+	AFTER UPDATE ON articles
+	FOR EACH ROW
+	EXECUTE PROCEDURE set_updated_at();
+	`,
+	},
+	{
+		Version:     7,
+		Description: "Add set_updated_at_comments trigger to comments table",
+		Script: `
+CREATE TRIGGER set_updated_at_comments
+	AFTER UPDATE ON comments
+	FOR EACH ROW
+	EXECUTE PROCEDURE set_updated_at();
+	`,
+	},
+	{
+		Version:     8,
+		Description: "Add set_updated_at_users trigger to users table",
+		Script: `
+CREATE TRIGGER set_updated_at_users
+	AFTER UPDATE ON users
+	FOR EACH ROW
+	EXECUTE PROCEDURE set_updated_at();
+	`,
+	},
+	{
+		Version:     9,
+		Description: "Create procedure automatically updating deleted_at field",
+		Script: `
+CREATE OR REPLACE FUNCTION set_deleted_at()
+	RETURNS TRIGGER AS
+	$BODY$
+	BEGIN
+		IF OLD.deleted = TRUE AND NEW.deleted = FALSE THEN 
+		NEW.deleted_at := NULL;
+		ELSEIF OLD.deleted = FALSE AND NEW.deleted = TRUE THEN 
+		NEW.deleted_at := now();
+	END IF;
+	RETURN NEW;
+	END;
+	$BODY$
+	LANGUAGE plpgsql;
+	`,
+	},
+	{
+		Version:     10,
+		Description: "Add set_deleted_at_comments trigger to comments table when deleted field is set to true",
+		Script: `
+CREATE TRIGGER set_deleted_at_comments
+	BEFORE UPDATE ON comments
+	FOR EACH ROW
+	EXECUTE PROCEDURE set_deleted_at();
+	`,
 	},
 }

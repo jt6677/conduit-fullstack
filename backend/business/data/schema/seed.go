@@ -32,10 +32,10 @@ func Seed(db *sqlx.DB) error {
 //qweqweqwe= $2a$10$3tC6Wv/k01nzS1ktCI/iNO.iTIGNauHtRe3pJ4RrPN.Xi4DcIbChm
 const seeds = `
 
--- Create admin and regular User with password "qweqweqwe"
-INSERT INTO users ( username, email,  password_hash, created_at, updated_at) VALUES
-	('123', '123@123.com',  '$2a$10$3tC6Wv/k01nzS1ktCI/iNO.iTIGNauHtRe3pJ4RrPN.Xi4DcIbChm', '2019-03-24 00:00:00', '2019-03-24 00:00:00'),
-	('qwe', 'qwe@qwe.com',  '$2a$10$DAuFZyv1Kna3JGb/hxPfq.B5x5C2aonraeFmSHphye0/QE02ROS86', '2019-03-24 00:00:00', '2019-03-24 00:00:00')
+-- Create regular User with password "qweqweqwe"
+INSERT INTO users (user_id, username, email, password_hash, created_at, updated_at) VALUES
+	('5cf37266-3473-4006-984f-9325122678b7', '123', '123@123.com',  '$2a$10$3tC6Wv/k01nzS1ktCI/iNO.iTIGNauHtRe3pJ4RrPN.Xi4DcIbChm', '2019-03-24 00:00:00', '2019-03-24 00:00:00'),
+	('5cf37266-3473-4006-984f-000000000001','ek323', 'qwe@qwe.com',  '$2a$10$DAuFZyv1Kna3JGb/hxPfq.B5x5C2aonraeFmSHphye0/QE02ROS86', '2019-03-24 00:00:00', '2019-03-24 00:00:00')
 	ON CONFLICT DO NOTHING;
 
 	`
@@ -80,16 +80,15 @@ func DropAll(db *sqlx.DB) error {
 const deleteAll = `
 DELETE FROM articles;
 DELETE FROM users;
+DELETE FROM comments;
+DELETE FROM favorites;
 DELETE FROM darwin_migrations;
-ALTER SEQUENCE users_user_id_seq		RESTART;
-ALTER SEQUENCE darwin_migrations_id_seq	RESTART;
 `
 const dropAll = `
+DROP SEQUENCE IF EXISTS darwin_migrations_id_seq	CASCADE;
+DROP TABLE IF EXISTS darwin_migrations;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS favorites;
 DROP TABLE IF EXISTS articles;
 DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS favorites;
-DROP TABLE IF EXISTS darwin_migrations;
-DROP SEQUENCE IF EXISTS users_user_id_seq		CASCADE;
-DROP SEQUENCE IF EXISTS articles_article_id_seq		CASCADE;
-DROP SEQUENCE IF EXISTS darwin_migrations_id_seq	CASCADE;
 `

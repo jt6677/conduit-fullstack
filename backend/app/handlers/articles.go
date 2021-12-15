@@ -24,18 +24,64 @@ func (ag articlesGroup) insertArticle(ctx context.Context, w http.ResponseWriter
 	if !ok {
 		return web.NewShutdownError("web value missing from context")
 	}
-	var na articles.Article
-	if err := web.Decode(r, &na); err != nil {
-		return errors.Wrap(err, "Decode error")
-	}
 	u, ok := ctx.Value(auth.UserValues).(*auth.UserSession)
 	if !ok {
 		return web.NewRequestError(errors.New("User is not logged in"), http.StatusUnauthorized)
+	}
+	var na articles.Article
+	if err := web.Decode(r, &na); err != nil {
+		return errors.Wrap(err, "Decode error")
 	}
 
 	slug, err := ag.articles.InsertArticle(ctx, v.TraceID, na, u.UserId)
 	if err != nil {
 		return errors.Wrapf(err, "Inserting Article")
+	}
+	return web.Respond(ctx, w, slug, http.StatusOK)
+}
+func (ag articlesGroup) deleteArticle(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+	ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "handlers.articles.insertArticle")
+	defer span.End()
+
+	v, ok := ctx.Value(web.KeyValues).(*web.Values)
+	if !ok {
+		return web.NewShutdownError("web value missing from context")
+	}
+
+	u, ok := ctx.Value(auth.UserValues).(*auth.UserSession)
+	if !ok {
+		return web.NewRequestError(errors.New("User is not logged in"), http.StatusUnauthorized)
+	}
+	slug := web.Params(r)["slug"]
+	err := ag.articles.DeleteArticle(ctx, v.TraceID, slug, u.UserId)
+	if err != nil {
+		return web.NewRequestError(errors.New("Failed to delete article"), http.StatusBadRequest)
+	}
+	return web.Respond(ctx, w, "Successfully Deleted Article", http.StatusOK)
+}
+
+func (ag articlesGroup) updateArticle(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+
+	ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "handlers.article.queryArticleByID")
+	defer span.End()
+
+	v, ok := ctx.Value(web.KeyValues).(*web.Values)
+	if !ok {
+		return web.NewShutdownError("web value missing from context")
+	}
+	u, ok := ctx.Value(auth.UserValues).(*auth.UserSession)
+	if !ok {
+		return web.NewRequestError(errors.New("User is not logged in"), http.StatusUnauthorized)
+	}
+	var na articles.Article
+	if err := web.Decode(r, &na); err != nil {
+		return errors.Wrap(err, "Decode error")
+	}
+	preArticleSlug := web.Params(r)["slug"]
+
+	slug, err := ag.articles.UpdateArticle(ctx, v.TraceID, preArticleSlug, na, u.UserId)
+	if err != nil {
+		return web.NewRequestError(errors.New("Failed to Update Article"), http.StatusBadRequest)
 	}
 	return web.Respond(ctx, w, slug, http.StatusOK)
 }
@@ -49,10 +95,9 @@ func (ag articlesGroup) queryArticleWithSlug(ctx context.Context, w http.Respons
 	if !ok {
 		return web.NewShutdownError("web value missing from context")
 	}
-	vars := web.Params(r)
-	slug := vars["slug"]
+	slug := web.Params(r)["slug"]
 	//default user not signed in
-	var userId = -1
+	var userId = "not-signed-in"
 	u, ok := ctx.Value(auth.UserValues).(*auth.UserSession)
 	//ok means user is signed in
 	if ok {
@@ -76,7 +121,7 @@ func (ag articlesGroup) queryArticles(ctx context.Context, w http.ResponseWriter
 		return web.NewShutdownError("web value missing from context")
 	}
 	//default user not signed in
-	var userId = -1
+	var userId = "not-signed-in"
 	u, ok := ctx.Value(auth.UserValues).(*auth.UserSession)
 	//ok means user is signed in
 	if ok {

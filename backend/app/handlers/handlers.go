@@ -10,6 +10,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/jt6677/conduit-fullstack/business/auth"
 	"github.com/jt6677/conduit-fullstack/business/data/articles"
+	"github.com/jt6677/conduit-fullstack/business/data/comments"
 	"github.com/jt6677/conduit-fullstack/business/data/user"
 	"github.com/jt6677/conduit-fullstack/business/mid"
 	"github.com/jt6677/conduit-fullstack/foundation/web"
@@ -57,19 +58,31 @@ func API(build string, csrfAuthKey string, shutdown chan os.Signal, db *sqlx.DB,
 	app.HandleSubRouter(api, http.MethodGet, "/profiles/{username:[a-zA-Z0-9]+}", ug.profile)
 
 	// =========================================================================
-	//Register session endpoints.
+	//Register articles endpoints.
 	ag := articlesGroup{
 		articles: articles.New(log, db),
 		auth:     a,
 	}
-	// app.Handle(http.MethodPost, "/api/articles", ag.insertArticle, mid.Authenticate(a))
 	app.HandleSubRouter(api, http.MethodPost, "/articles", ag.insertArticle, mid.Authenticate(a))
+	app.HandleSubRouter(api, http.MethodDelete, "/article/{slug}", ag.deleteArticle, mid.Authenticate(a))
+	app.HandleSubRouter(api, http.MethodPut, "/article/{slug}", ag.updateArticle, mid.Authenticate(a))
 	app.HandleSubRouter(api, http.MethodGet, "/article/{slug:[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$}", ag.queryArticleWithSlug, mid.Authenticate(a))
 	app.HandleSubRouter(api, http.MethodPost, "/article/{slug}/favorite", ag.favorite, mid.Authenticate(a))
 	app.HandleSubRouter(api, http.MethodDelete, "/article/{slug}/unfavorite", ag.unfavorite, mid.Authenticate(a))
 	app.HandleSubRouter(api, http.MethodGet, "/articles/all", ag.queryArticles, mid.Authenticate(a))
 	app.HandleSubRouter(api, http.MethodGet, "/articles/myfeed", ag.queryArticlesByUser, mid.Authenticate(a))
 
+	// =========================================================================
+	//Register session endpoints.
+	cg := commentsGroup{
+		comments: comments.New(log, db),
+		auth:     a,
+	}
+	app.HandleSubRouter(api, http.MethodPost, "/comments/post", cg.insertComment, mid.Authenticate(a))
+	app.HandleSubRouter(api, http.MethodPost, "/comments/get", cg.getComments, mid.Authenticate(a))
+	app.HandleSubRouter(api, http.MethodPost, "/comments/delete", cg.deleteComment, mid.Authenticate(a))
+
+	// =========================================================================
 	return app
 }
 

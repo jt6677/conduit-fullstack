@@ -1,32 +1,34 @@
 package user
 
 import (
-	"time"
-
 	"github.com/jt6677/conduit-fullstack/business/data/schema"
 )
 
 // UserInfo represents an individual user.
-// untrusted
+// Omitedempty tags are used to omit empty fields from JSON
+// Default values like 0,'',falese are ALSO ommited
+// In these cases, use pointer types(*int,*string,*bool)
+// Empty embedded structs will not be ommited, use pointers to them
 type UserInfo struct {
-	Id           int               `db:"user_id" json:"user_id"`
-	Username     string            `db:"username" json:"username"`
-	Email        string            `db:"email" json:"email"`
-	PasswordHash []byte            `db:"password_hash" json:"-"`
-	Password     string            `json:"password"`
-	CreatedAt    time.Time         `db:"created_at" json:"created_at"`
-	UpdatedAt    time.Time         `db:"updated_at" json:"updated_at"`
-	Bio          schema.NullString `db:"bio" json:"bio"`
-	Image        schema.NullString `db:"image" json:"image"`
+	Id           string             `db:"user_id" json:"user_id,omitempty"`
+	Username     string             `db:"username" json:"username,omitempty"`
+	Email        string             `db:"email" json:"email,omitempty"`
+	PasswordHash []byte             `db:"password_hash" json:"-"`
+	Password     string             `json:"password,omitempty"`
+	CreatedAt    *schema.NullTime   `db:"created_at" json:"created_at,omitempty"`
+	UpdatedAt    *schema.NullTime   `db:"updated_at" json:"updated_at,omitempty"`
+	Bio          *schema.NullString `db:"bio" json:"bio"`
+	Image        *schema.NullString `db:"image" json:"image"`
 }
 
 // TrustedUserInfo represents userInfo that is safe to return
-type TrustedUserInfo struct {
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Bio      string `json:"bio"`
-	Image    string `json:"image"`
-}
+// type TrustedUserInfo struct {
+// 	Id       string `json:"user_id"`
+// 	Username string `json:"username"`
+// 	Email    string `json:"email"`
+// 	Bio      string `json:"bio"`
+// 	Image    string `json:"image"`
+// }
 
 // NewUser contains information needed to create a new User.
 type NewUser struct {

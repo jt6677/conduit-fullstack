@@ -8,8 +8,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
-	"github.com/jt6677/conduit-fullstack/business/auth"
+	"github.com/jt6677/conduit-fullstack/business/data/schema"
 	"github.com/jt6677/conduit-fullstack/foundation/database"
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
@@ -61,23 +62,24 @@ func (u User) Create(ctx context.Context, traceID string, nu NewUser, now time.T
 	}
 
 	usr := UserInfo{
+		Id:           uuid.New().String(),
 		Username:     nu.Username,
 		Email:        nu.Email,
 		PasswordHash: hash,
-		CreatedAt:    now.UTC(),
-		UpdatedAt:    now.UTC(),
+		CreatedAt:    schema.CreateNullTime(now.UTC()),
+		UpdatedAt:    schema.CreateNullTime(now.UTC()),
 	}
 	// INSERT INTO users ( username, email,  password_hash, date_created, date_updated) VALUES
 	// 	('123', '123@123.com',  '$2a$10$3tC6Wv/k01nzS1ktCI/iNO.iTIGNauHtRe3pJ4RrPN.Xi4DcIbChm', '2019-03-24 00:00:00', '2019-03-24 00:00:00'),
 	const q = `INSERT INTO users
-		(username, email, password_hash, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5)`
+		(user_id,username, email, password_hash, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6)`
 
 	u.log.Printf("%s : %s : query : %s", traceID, "user.Create",
-		database.Log(q, usr.Username, usr.Email, usr.PasswordHash, usr.CreatedAt, usr.UpdatedAt),
+		database.Log(q, usr.Id, usr.Username, usr.Email, usr.PasswordHash, usr.CreatedAt, usr.UpdatedAt),
 	)
 
-	if _, err = u.db.ExecContext(ctx, q, usr.Username, usr.Email, usr.PasswordHash, usr.CreatedAt, usr.UpdatedAt); err != nil {
+	if _, err = u.db.ExecContext(ctx, q, usr.Id, usr.Username, usr.Email, usr.PasswordHash, usr.CreatedAt, usr.UpdatedAt); err != nil {
 		// fmt.Printf("!!!!!%T,%v\n", err, err)
 		pqErr := err.(*pq.Error)
 		if pqErr.Code == "23505" {
@@ -105,45 +107,45 @@ func (u User) QueryByEmail(ctx context.Context, traceID string, email string) (U
 		if err == sql.ErrNoRows {
 			return UserInfo{}, ErrNotFound
 		}
-		return UserInfo{}, errors.Wrapf(err, "selecting user %q", email)
+		return UserInfo{}, errors.Wrapf(err, "user.QueryByEmail %q", email)
 	}
 	return usr, nil
 }
 
 // QueryById gets the specified user from the database by email.
-func (u User) QueryById(ctx context.Context, traceID string, id int) (TrustedUserInfo, error) {
+func (u User) QueryById(ctx context.Context, traceID string, userId string) (UserInfo, error) {
 	ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "business.data.user.QueryById")
 	defer span.End()
 
-	const q = `SELECT username, email, bio, image FROM users WHERE user_id = $1`
+	const q = `SELECT username,user_id email, bio, image FROM users WHERE user_id = $1`
 
 	u.log.Printf("%s : %s : query : %s", traceID, "user.QueryById",
-		database.Log(q, id),
+		database.Log(q, userId),
 	)
 
 	var usr UserInfo
 	// var trustedUserInfo TrustedUserInfo
-	if err := u.db.GetContext(ctx, &usr, q, id); err != nil {
+	if err := u.db.GetContext(ctx, &usr, q, userId); err != nil {
 		if err == sql.ErrNoRows {
-			return TrustedUserInfo{}, ErrNotFound
+			return UserInfo{}, ErrNotFound
 		}
-		return TrustedUserInfo{}, errors.Wrapf(err, "selecting user %q", id)
+		return UserInfo{}, errors.Wrapf(err, "user.QueryById %q", userId)
 	}
-	trustedUserInfo := TrustedUserInfo{
-		Email:    usr.Email,
-		Username: usr.Username,
-		Bio:      usr.Bio.String,
-		Image:    usr.Image.String,
-	}
-	return trustedUserInfo, nil
+	// trustedUserInfo := TrustedUserInfo{
+	// 	Email:    usr.Email,
+	// 	Username: usr.Username,
+	// 	Bio:      usr.Bio.String,
+	// 	Image:    usr.Image.String,
+	// }
+	return usr, nil
 }
 
 // QueryById gets the specified user from the database by email.
-func (u User) QueryByUsername(ctx context.Context, traceID string, username string) (TrustedUserInfo, error) {
+func (u User) QueryByUsername(ctx context.Context, traceID string, username string) (UserInfo, error) {
 	ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "business.data.user.QueryByUsername")
 	defer span.End()
 
-	const q = `SELECT username, email, bio, image FROM users WHERE username = $1`
+	const q = `SELECT username,user_id, email, bio, image FROM users WHERE username = $1`
 
 	u.log.Printf("%s : %s : query : %s", traceID, "user.QueryByUsername",
 		database.Log(q, username),
@@ -151,59 +153,57 @@ func (u User) QueryByUsername(ctx context.Context, traceID string, username stri
 	var usr UserInfo
 	if err := u.db.GetContext(ctx, &usr, q, username); err != nil {
 		if err == sql.ErrNoRows {
-			return TrustedUserInfo{}, ErrNotFound
+			return UserInfo{}, ErrNotFound
 		}
-		return TrustedUserInfo{}, errors.Wrapf(err, "selecting user %q", username)
+		return UserInfo{}, errors.Wrapf(err, "user.QueryByUsername %q", username)
 	}
-	trustedUserInfo := TrustedUserInfo{
-		Username: usr.Username,
-		Email:    usr.Email,
-		Bio:      usr.Bio.String,
-		Image:    usr.Image.String,
-	}
-	return trustedUserInfo, nil
+	// trustedUserInfo := TrustedUserInfo{
+	// 	Username: usr.Username,
+	// 	Email:    usr.Email,
+	// 	Bio:      usr.Bio.String,
+	// 	Image:    usr.Image.String,
+	// }
+	return usr, nil
 }
 
 // Authenticate finds a user by their email and verifies their password. On
 // success it returns a Claims UserInfo representing this user. The claims can be
 // used to generate a token for future authentication.
-func (u User) Authenticate(ctx context.Context, traceID string, emailorusername, password string) (auth.UserSession, error) {
+func (u User) Authenticate(ctx context.Context, traceID string, emailorusername, password string) (UserInfo, error) {
 	// ctx, span := trace.SpanFromContext(ctx).Tracer().Start(ctx, "business.data.user.authenticate")
 	// defer span.End()
 	var q string
 	if strings.Contains(emailorusername, "@") {
-		q = `SELECT * FROM users WHERE email = $1`
+		q = `SELECT username, user_id, email, bio, image, password_hash FROM users WHERE email = $1`
 	} else {
-		q = `SELECT * FROM users WHERE username = $1`
+		q = `SELECT username, user_id, email, bio, image, password_hash FROM users WHERE username = $1`
 	}
 	u.log.Printf("%s : %s : query : %s", traceID, "user.Authenticate",
 		database.Log(q, emailorusername),
 	)
 
-	var usr UserInfo
-	if err := u.db.GetContext(ctx, &usr, q, emailorusername); err != nil {
+	var user UserInfo
+	if err := u.db.GetContext(ctx, &user, q, emailorusername); err != nil {
 
 		// Normally we would return ErrNotFound in this scenario but we do not want
 		// to leak to an unauthenticated user which emails are in the system.
 		if err == sql.ErrNoRows {
-			return auth.UserSession{}, ErrAuthenticationFailure
+			return UserInfo{}, ErrAuthenticationFailure
 		}
 
-		return auth.UserSession{}, errors.Wrap(err, "selecting single user")
+		return UserInfo{}, errors.Wrap(err, "selecting single user")
 	}
-
+	// fmt.Println(user.PasswordHash)
 	// Compare the provided password with the saved hash. Use the bcrypt
 	// comparison function so it is cryptographically secure.
-	if err := bcrypt.CompareHashAndPassword(usr.PasswordHash, []byte(password)); err != nil {
-		return auth.UserSession{}, ErrAuthenticationFailure
+	if err := bcrypt.CompareHashAndPassword(user.PasswordHash, []byte(password)); err != nil {
+		return UserInfo{}, err
 	}
 
-	// If we are this far the request is valid. Create some claims for the user
-	// and generate their token.
-	user := auth.UserSession{
-		UserId:   usr.Id,
-		Username: usr.Username,
-	}
+	// userSession := auth.UserSession{
+	// 	UserId:   user.Id,
+	// 	Username: user.Username,
+	// }
 
 	return user, nil
 }

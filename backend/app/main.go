@@ -15,7 +15,6 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/jt6677/conduit-fullstack/app/handlers"
 	"github.com/jt6677/conduit-fullstack/business/auth"
-	"github.com/jt6677/conduit-fullstack/business/data/schema"
 	"github.com/jt6677/conduit-fullstack/foundation/database"
 	"github.com/pkg/errors"
 )
@@ -54,17 +53,17 @@ func run(log *log.Logger) error {
 	}
 	cfg.Version.SVN = build
 	cfg.Version.Desc = "Go Forward with Conduit!"
-	if err := conf.Parse(os.Args[1:], "SALES", &cfg); err != nil {
+	if err := conf.Parse(os.Args[1:], "Conduit", &cfg); err != nil {
 		switch err {
 		case conf.ErrHelpWanted:
-			usage, err := conf.Usage("SALES", &cfg)
+			usage, err := conf.Usage("Conduit", &cfg)
 			if err != nil {
 				return errors.Wrap(err, "generating config usage")
 			}
 			fmt.Println(usage)
 			return nil
 		case conf.ErrVersionWanted:
-			version, err := conf.VersionString("SALES", &cfg)
+			version, err := conf.VersionString("Conduit", &cfg)
 			if err != nil {
 				return errors.Wrap(err, "generating config version")
 			}
@@ -110,10 +109,10 @@ func run(log *log.Logger) error {
 
 	// // =========================================================================
 
-	err = schema.Migrate(db)
-	if err != nil {
-		return errors.Wrap(err, "miragating db")
-	}
+	// err = schema.Migrate(db)
+	// if err != nil {
+	// 	return errors.Wrap(err, "miragating db")
+	// }
 
 	// // =========================================================================
 
@@ -131,10 +130,10 @@ func run(log *log.Logger) error {
 	// fmt.Println("all Tables dropped")
 	// // =========================================================================
 
-	defer func() {
-		log.Printf("main: Database Stopping : %s", cfg.DB.Host)
-		db.Close()
-	}()
+	// defer func() {
+	// 	log.Printf("main: Database Stopping : %s", cfg.DB.Host)
+	// 	db.Close()
+	// }()
 
 	// =========================================================================
 	// Initialize authentication support
