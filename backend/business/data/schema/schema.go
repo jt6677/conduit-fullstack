@@ -26,7 +26,7 @@ func Migrate(db *sqlx.DB) error {
 var migrations = []darwin.Migration{
 	{
 		Version:     1,
-		Description: "Add users",
+		Description: "Add users table",
 		Script: `
 CREATE TABLE users (
 	user_id       UUID,
@@ -42,7 +42,7 @@ CREATE TABLE users (
 	},
 	{
 		Version:     2,
-		Description: "Add articles",
+		Description: "Add articles table",
 		Script: `
 CREATE TABLE articles (
 	article_id		UUID,
@@ -59,7 +59,7 @@ CREATE TABLE articles (
 	},
 	{
 		Version:     3,
-		Description: "Add favorites",
+		Description: "Add favorites table",
 		Script: `
 CREATE TABLE favorites (
 	article_id		UUID,
@@ -71,7 +71,7 @@ CREATE TABLE favorites (
 	},
 	{
 		Version:     4,
-		Description: "Add comments",
+		Description: "Add comments table",
 		Script: `
 CREATE TABLE comments (
 	comment_id		UUID,

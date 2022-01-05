@@ -4,7 +4,7 @@
 //   REACT_APP_CSFF_API_URL: string
 //   sb: string
 // }
-interface ImportMetaEnv extends Readonly<Record<string, string>> {
+interface ImportMetaEnv{
   readonly VITE_APP_TITLE: string
   readonly VITE_API_URL_CSRF: string
   readonly VITE_API_URL: string

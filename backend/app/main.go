@@ -15,7 +15,9 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/jt6677/conduit-fullstack/app/handlers"
 	"github.com/jt6677/conduit-fullstack/business/auth"
+	"github.com/jt6677/conduit-fullstack/business/data/schema"
 	"github.com/jt6677/conduit-fullstack/foundation/database"
+	"github.com/jt6677/conduit-fullstack/foundation/tracer"
 	"github.com/pkg/errors"
 )
 
@@ -34,8 +36,8 @@ func run(log *log.Logger) error {
 	var cfg struct {
 		conf.Version
 		Web struct {
-			APIHost         string        `conf:"default:localhost:8080"`
-			DebugHost       string        `conf:"default:0.0.0.0:4000"`
+			APIHost         string        `conf:"default:0.0.0.0:8080"`
+			DebugHost       string        `conf:"default:0.0.0.0:8081"`
 			ReadTimeout     time.Duration `conf:"default:20s"`
 			WriteTimeout    time.Duration `conf:"default:20s"`
 			ShutdownTimeout time.Duration `conf:"default:10s"`
@@ -45,10 +47,15 @@ func run(log *log.Logger) error {
 		}
 		DB struct {
 			User       string `conf:"default:postgres"`
-			Password   string `conf:"default:123321,noprint"`
+			Password   string `conf:"default:postgres,noprint"`
 			Host       string `conf:"default:localhost"`
-			Name       string `conf:"default:conduit"`
+			Name       string `conf:"default:postgres"`
 			DisableTLS bool   `conf:"default:true"`
+		}
+		Zipkin struct {
+			ReporterURI string  `conf:"default:http://zipkin:9411/api/v2/spans"`
+			ServiceName string  `conf:"default:app-api"`
+			Probability float64 `conf:"default:0.05"`
 		}
 	}
 	cfg.Version.SVN = build
@@ -91,6 +98,7 @@ func run(log *log.Logger) error {
 
 	log.Println("main: Initializing database support")
 
+	fmt.Println(cfg.DB.User, cfg.DB.Password, cfg.DB.Host, cfg.DB.Name)
 	db, err := database.Open(database.Config{
 		User:       cfg.DB.User,
 		Password:   cfg.DB.Password,
@@ -101,18 +109,17 @@ func run(log *log.Logger) error {
 	if err != nil {
 		return errors.Wrap(err, "connecting to db")
 	}
-	ctx := context.Background()
-	err = database.StatusCheck(ctx, db)
-	if err != nil {
-		return errors.Wrap(err, "connecting to db")
-	}
-
 	// // =========================================================================
 
-	// err = schema.Migrate(db)
-	// if err != nil {
-	// 	return errors.Wrap(err, "miragating db")
-	// }
+	err = schema.Migrate(db)
+	if err != nil {
+		return errors.Wrap(err, "miragating db")
+	}
+	// // =========================================================================
+	defer func() {
+		log.Printf("main: Database Stopping : %s", cfg.DB.Host)
+		db.Close()
+	}()
 
 	// // =========================================================================
 
@@ -128,13 +135,35 @@ func run(log *log.Logger) error {
 	// 	return errors.Wrap(err, "delete datat in all tables")
 	// }
 	// fmt.Println("all Tables dropped")
-	// // =========================================================================
 
-	// defer func() {
-	// 	log.Printf("main: Database Stopping : %s", cfg.DB.Host)
-	// 	db.Close()
-	// }()
+	// =========================================================================
+	// Start Tracing Support
 
+	// WARNING: The current Init settings are using defaults which I listed out
+	// for readability. Please review the documentation for opentelemetry.
+
+	log.Println("main: Initializing zipkin tracing support")
+
+	if err := tracer.Init(cfg.Zipkin.ServiceName, cfg.Zipkin.ReporterURI, cfg.Zipkin.Probability, log); err != nil {
+		return errors.Wrap(err, "starting tracer")
+	}
+
+	// =========================================================================
+	// Start Debug Service
+	//
+	// /debug/pprof - Added to the default mux by importing the net/http/pprof package.
+	// /debug/vars - Added to the default mux by importing the expvar package.
+	//
+	// Not concerned with shutting this down when the application is shutdown.
+
+	log.Println("main: Initializing debugging support")
+
+	go func() {
+		log.Printf("main: Debug Listening %s", cfg.Web.DebugHost)
+		if err := http.ListenAndServe(cfg.Web.DebugHost, http.DefaultServeMux); err != nil {
+			log.Printf("main: Debug Listener closed : %v", err)
+		}
+	}()
 	// =========================================================================
 	// Initialize authentication support
 	var store = sessions.NewCookieStore([]byte(cfg.Web.SessionSecret))

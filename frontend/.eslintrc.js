@@ -40,6 +40,7 @@ module.exports = {
       },
     ],
     'jsx-a11y/no-autofocus': 'off',
+    'jsx-a11y/click-events-have-key-events': 'off',
     'react/require-default-props': 'off',
     'react/no-children-prop': 'off',
     'react/no-unescaped-entities': 'off',

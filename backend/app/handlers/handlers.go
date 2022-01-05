@@ -38,12 +38,12 @@ func API(build string, csrfAuthKey string, shutdown chan os.Signal, db *sqlx.DB,
 
 	// =========================================================================
 	// Register health check endpoint. This route is not authenticated.
-	// cg := checkGroup{
-	// 	build: build,
-	// 	db:    db,
-	// }
-	// app.Handle(http.MethodGet, "/v1/readiness", cg.readiness)
-	// app.Handle(http.MethodGet, "/v1/liveness", cg.liveness)
+	ckg := checkGroup{
+		build: build,
+		db:    db,
+	}
+	app.Handle(http.MethodGet, "/v1/readiness", ckg.readiness)
+	app.Handle(http.MethodGet, "/v1/liveness", ckg.liveness)
 
 	// =========================================================================
 	//Register user management and authentication endpoints.

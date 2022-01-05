@@ -13,6 +13,7 @@ export default defineConfig({
     },
   },
   server: {
+    // port: 1000,
     proxy: {
       // '/': 'https://homebg.ga/',
       // '/api': 'https://homebg.ga/api',

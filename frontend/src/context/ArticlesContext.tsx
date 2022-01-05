@@ -7,10 +7,10 @@ import {
   articlesReducer,
   initialState,
 } from '~/reducers/articleList'
-import { IArticle } from '~/types'
+import { IArticle, IComment } from '~/types'
 import { createCtx } from '~/utils/utils'
 
-type ArticleListContextProps = {
+interface ArticlesContextProps {
   state: ArticleListState
   dispatch: Dispatch<ArticleListAction>
   fetchArticle: (slug: string) => Promise<IArticle>
@@ -21,8 +21,11 @@ type ArticleListContextProps = {
   deleteArticle: (slug: string) => Promise<string>
   favoriteArticle: (slug: string) => Promise<IArticle>
   unfavoriteArticle: (slug: string) => Promise<IArticle>
+  fetchComments: (articleId: string) => Promise<IComment[]>
+  postComment(articleId: string, body: string, parentId: string): Promise<IComment>
+  deleteComment(articleId: string, commentId: string): Promise<string>
 }
-export const [useArticles, CtxProvider] = createCtx<ArticleListContextProps>()
+export const [useArticles, CtxProvider] = createCtx<ArticlesContextProps>()
 
 export function ArticlesProvider(props: React.PropsWithChildren<any>): JSX.Element {
   const [state, dispatch] = useReducer(articlesReducer, initialState)
@@ -64,6 +67,37 @@ export function ArticlesProvider(props: React.PropsWithChildren<any>): JSX.Eleme
       .delete<IArticle>(`/article/${slug}/unfavorite`)
       .then((response) => response.data)
   }
+  function fetchComments(articleId: string): Promise<IComment[]> {
+    return authAxios
+      .post<IComment[]>(`/comments/get`, { article_Id: articleId })
+      .then((response) => {
+        if (response.data) {
+          return response.data
+        }
+        return []
+      })
+  }
+  function postComment(
+    articleId: string,
+    body: string,
+    parentId: string
+  ): Promise<IComment> {
+    return authAxios
+      .post<IComment>(`/comments/post`, {
+        article_id: articleId,
+        body,
+        parent_id: parentId,
+      })
+      .then((response) => response.data)
+  }
+  function deleteComment(articleId: string, commentId: string): Promise<string> {
+    return authAxios
+      .post<string>(`/comments/delete`, {
+        article_id: articleId,
+        comment_id: commentId,
+      })
+      .then((response) => response.data)
+  }
 
   return (
     <CtxProvider
@@ -78,16 +112,11 @@ export function ArticlesProvider(props: React.PropsWithChildren<any>): JSX.Eleme
         deleteArticle,
         favoriteArticle,
         unfavoriteArticle,
+        fetchComments,
+        postComment,
+        deleteComment,
       }}
       {...props}
     />
   )
 }
-
-// export default function useArticles(): ArticleListContextProps {
-//   const context = useContext(ArticlesContext)
-//   if (!context) {
-//     throw new Error(`useArticles must be used within an ArticlesProvider`)
-//   }
-//   return context
-// }

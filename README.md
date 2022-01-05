@@ -11,3 +11,6 @@ todo-list:
 5.comment endpoint
 6.delete comment endpoint
 7.Favorite\unFavorite endpoint
+
+ip=35.187.194.169
+url=homebh.ga

@@ -1,0 +1,24 @@
+# Declare the base image
+FROM node:alpine AS builder
+WORKDIR /frontend
+COPY package*.json /frontend
+COPY yarn.lock /frontend
+
+RUN yarn install
+# 4. Copy the source code to /app dir
+COPY . .
+RUN npm run build
+
+
+# production environment
+# nginx state for serving content
+FROM nginx:alpine
+# Set working directory to nginx asset directory
+WORKDIR /usr/share/nginx/html
+# Remove default nginx static assets
+RUN rm -rf ./*
+# Copy static assets from builder stage
+COPY --from=builder /frontend/dist .
+EXPOSE 80
+# Containers run nginx with global directives and daemon off
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

@@ -31,6 +31,7 @@ export function AuthProvider(props: React.PropsWithChildren<any>): JSX.Element {
     return authAxios
       .post<IUser>('/signin', { email, password })
       .then((response) => response.data)
+
     // .catch((error) => error.response)
   }
   function Signup(username: string, email: string, password: string): Promise<IUser> {

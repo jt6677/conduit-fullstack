@@ -65,7 +65,6 @@ export default function Editor(_: RouteProps) {
   }) => {
     setIsError(null)
     setLoading(true)
-    console.log(title, description, body)
     try {
       let payload
       // if (slug) then update
@@ -78,30 +77,7 @@ export default function Editor(_: RouteProps) {
       }
     } catch (error) {
       console.log(error)
-      // if (error.status === 422) {
-      //   dispatch({ type: 'SET_ERRORS', errors: error.data.errors })
-      // }
     }
-    // try {
-    //   const user = await Signin(email, password)
-    //   setIsSuccess('Successfully Signed In')
-    //   setTimeout(() => {
-    //     setRedirectOnLogin(true)
-    //     dispatch({ type: AuthActionType.LOAD_USER, user })
-    //   }, 700)
-    //   // history.push('/')
-    // } catch (error) {
-    //   const err = error as AxiosError<IError>
-    //   if (err.response) {
-    //     setIsError(err.response.data.error)
-    //     setTimeout(() => {
-    //       setIsError(null)
-    //     }, 1200)
-    //   } else {
-    //     console.log(error)
-    //   }
-    //   setLoading(false)
-    // }
   }
   return (
     <div className="max-w-[85rem] h-screen mx-auto px-2 sm:px-4 lg:px-4 py-6 bg-gray-50">

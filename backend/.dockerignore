@@ -1,0 +1,11 @@
+.circleci/
+zarf/
+.dockerignore
+.gitgnore
+LICENSE
+Makefile
+README.md
+pgdata/
+.vscode/
+tmp/
+dist/

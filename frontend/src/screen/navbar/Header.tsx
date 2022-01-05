@@ -22,7 +22,7 @@ const LoggedInView = ({
   handleSignout,
 }: LoggedInViewProps) => {
   return (
-    <div className="flex items-center">
+    <div className="z-50 flex items-center ">
       <div className="flex-shrink-0">
         <NavLink
           type="button"

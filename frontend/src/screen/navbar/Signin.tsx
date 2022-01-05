@@ -18,7 +18,7 @@ export default function Signin(_: RouteProps) {
   const {
     state: { user },
     dispatch,
-    Signin,
+    Signin: SigninAction,
   } = useAuth()
 
   const handleSubmit = async ({
@@ -31,22 +31,28 @@ export default function Signin(_: RouteProps) {
     setIsError(null)
     setLoading(true)
     try {
-      const user = await Signin(email, password)
-      setIsSuccess('Successfully Signed In')
-      setTimeout(() => {
-        setRedirectOnLogin(true)
-        dispatch({ type: AuthActionType.LOAD_USER, user })
-      }, 700)
+      const data = await SigninAction(email, password)
+      if (data) {
+        console.log(data)
+        setIsSuccess('Successfully Signed In')
+        setTimeout(() => {
+          setRedirectOnLogin(true)
+          dispatch({ type: AuthActionType.LOAD_USER, user: data })
+        }, 700)
+      }
+      // console.log(user)
       // history.push('/')
     } catch (error) {
       const err = error as AxiosError<IError>
       if (err.response) {
-        setIsError(err.response.data.error)
+        // console.log('asdasd', error)
+
+        setIsError('Failed to Sign In, Please try again')
         setTimeout(() => {
           setIsError(null)
         }, 1200)
-      } else {
-        console.log(error)
+        // } else {
+        // console.log(error)
       }
       setLoading(false)
     }

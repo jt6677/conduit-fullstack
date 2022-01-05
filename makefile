@@ -19,24 +19,33 @@ include .envrc
 .PHONY:ssh-root
 ssh-root:
 	ssh -i ${SSHKEYLOCATION} root@${REMOTE_IP}
-
-.PHONY:ssh-user
-ssh-user:
-	ssh ${USER}@${REMOTE_IP}
+#One command to deploy from scratch
+.PHONY:deploy-all
+deploy-all:
+	@echo "deploy-script"
+	make deploy-script
+	@echo "deploy-backend"
+	make deploy-backend
+	@echo "deploy-frontend"
+	make deploy-frontend
+	@echo "deploy-api.service"
+	make deploy-api.service
+	@echo "deploy-caddyfile"
+	make deploy-caddyfile
 
 #Upload script to Remote
-.PHONY:send-script
-send-script:
+#Exectue script
+#Saving script as unix first
+#Gaining permission to execute
+#Execute script
+.PHONY:deploy-script
+deploy-script:
 	rsync -rP --delete ./remote/setup -e "ssh -i ${SSHKEYLOCATION}" root@${REMOTE_IP}:/root
-
-#Execute script uploaded previously
-.PHONY:execute-script
-execute-script:
 	ssh -i ${SSHKEYLOCATION} -t root@${REMOTE_IP} '\
+		vim /root/setup/01.sh +"set ff=unix" +wq \
 		chmod +x /root/setup/01.sh \
 		&& bash /root/setup/01.sh \
 	'
-
 # ==============================================================================
 #Deploy Go api to remote
 .PHONY:deploy-backend
@@ -63,15 +72,15 @@ deploy-frontend:
 	rsync -rP --delete ./frontend/dist -e "ssh -i ${SSHKEYLOCATION}" root@${REMOTE_IP}:/etc/www/frontend
 
 #Upload api.service and make it run in background
-.PHONY:depoly-api.service
-depoly-api.service:
+.PHONY:deploy-api.service
+deploy-api.service:
 	rsync -P ./remote/production/api.service -e "ssh -i ${SSHKEYLOCATION}" root@${REMOTE_IP}:~
 	ssh -i ${SSHKEYLOCATION} -t root@${REMOTE_IP} '\
 		sudo mv ~/api.service /etc/systemd/system/ \
 		&& sudo systemctl enable api \
 		&& sudo systemctl restart api \
 	'
-## production/configure/caddyfile: configure the production Caddyfile
+#Deploy Caddyfile
 .PHONY:deploy-caddyfile
 deploy-caddyfile:
 	rsync -P ./remote/production/Caddyfile -e "ssh -i ${SSHKEYLOCATION}" root@${REMOTE_IP}:~

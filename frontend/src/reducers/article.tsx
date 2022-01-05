@@ -8,6 +8,8 @@ export enum ArticleActionType {
   ARTICLE_UNFAVORITED = 'ARTICLE_UNFAVORITED',
   ADD_COMMENT = 'ADD_COMMENT',
   DELETE_COMMENT = 'DELETE_COMMENT',
+  COMMENTS_OLDEST = 'COMMENTS_OLDEST',
+  COMMENTS_NEWEST = 'COMMENTS_NEWEST',
   FOLLOW_AUTHOR = 'FOLLOW_AUTHOR',
   UNFOLLOW_AUTHOR = 'UNFOLLOW_AUTHOR',
 }
@@ -15,7 +17,7 @@ export type ArticleAction =
   | { type: ArticleActionType.FETCH_ARTICLE_BEGIN }
   | {
       type: ArticleActionType.FETCH_ARTICLE_SUCCESS
-      payload: { article: IArticle; comments: IComment[] }
+      payload: { article: IArticle; comments: IComment[] | [] }
     }
   | { type: ArticleActionType.FETCH_ARTICLE_ERROR; error: string }
   | {
@@ -27,7 +29,9 @@ export type ArticleAction =
       payload: { article: IArticle }
     }
   | { type: ArticleActionType.ADD_COMMENT; payload: { comment: IComment } }
-  | { type: ArticleActionType.DELETE_COMMENT; commentId: number }
+  | { type: ArticleActionType.DELETE_COMMENT; commentId: string }
+  | { type: ArticleActionType.COMMENTS_OLDEST }
+  | { type: ArticleActionType.COMMENTS_NEWEST }
   | { type: ArticleActionType.FOLLOW_AUTHOR }
   | { type: ArticleActionType.UNFOLLOW_AUTHOR }
 
@@ -36,6 +40,7 @@ export interface ArticleState {
   comments: Array<IComment>
   loading: boolean
   error: string | null
+  commentsOrder: 'oldest' | 'newest'
 }
 
 export const initialState: ArticleState = {
@@ -43,6 +48,7 @@ export const initialState: ArticleState = {
   comments: [],
   loading: false,
   error: null,
+  commentsOrder: 'newest',
 }
 
 export function articleReducer(state: ArticleState, action: ArticleAction): ArticleState {
@@ -85,7 +91,29 @@ export function articleReducer(state: ArticleState, action: ArticleAction): Arti
     case ArticleActionType.DELETE_COMMENT:
       return {
         ...state,
-        comments: state.comments.filter((comment) => comment.id !== action.commentId),
+        comments: state.comments.filter(
+          (comment) => comment.comment_id !== action.commentId
+        ),
+      }
+    case ArticleActionType.COMMENTS_OLDEST:
+      return {
+        ...state,
+        comments: state.comments.sort(function (a, b) {
+          if (a.created_at < b.created_at) return -1
+          if (a.created_at > b.created_at) return 1
+          return 0
+        }),
+        commentsOrder: 'oldest',
+      }
+    case ArticleActionType.COMMENTS_NEWEST:
+      return {
+        ...state,
+        comments: state.comments.sort(function (a, b) {
+          if (a.created_at < b.created_at) return 1
+          if (a.created_at > b.created_at) return -1
+          return 0
+        }),
+        commentsOrder: 'newest',
       }
     case ArticleActionType.FOLLOW_AUTHOR:
     case ArticleActionType.UNFOLLOW_AUTHOR:
