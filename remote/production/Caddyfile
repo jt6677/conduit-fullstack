@@ -13,3 +13,6 @@ homebh.ga/api/* {
 homebh.ga {
  reverse_proxy localhost:3000
 }
+https://homebh.ga {
+ reverse_proxy localhost:3000
+}
