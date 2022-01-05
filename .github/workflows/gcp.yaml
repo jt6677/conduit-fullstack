@@ -32,6 +32,7 @@ jobs:
       - name: Configure Docker Client
         run: |-
           gcloud auth configure-docker --quiet
+          gcloud auth configure-docker asia-northeast1-docker.pkg.dev --quiet
 
       - name: Push Docker Images to Container Registry (GCR)
         env:
@@ -42,3 +43,13 @@ jobs:
 
           docker tag $BACKEND_IMAGE:latest gcr.io/$PROJECT_ID/$BACKEND_IMAGE
           docker push gcr.io/$PROJECT_ID/$BACKEND_IMAGE:latest
+
+      - name: Push Docker Images to Artifact Registry
+        env:
+          GIT_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
+        run: |-
+          docker tag $FRONTEND_IMAGE:latest asia-northeast1-docker.pkg.dev/$PROJECT_ID/images/$FRONTEND_IMAGE
+          docker push asia-northeast1-docker.pkg.dev/$PROJECT_ID/images/$FRONTEND_IMAGE:latest
+
+          docker tag $BACKEND_IMAGE:latest asia-northeast1-docker.pkg.dev/$PROJECT_ID/images/$BACKEND_IMAGE
+          docker push asia-northeast1-docker.pkg.dev/$PROJECT_ID/images/$BACKEND_IMAGE:latest
