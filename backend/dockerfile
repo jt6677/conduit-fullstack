@@ -39,6 +39,8 @@ COPY --from=build_app /service/app /service/app
 WORKDIR /service/app
 CMD ["./app"]
 
+EXPOSE 8080
+
 LABEL org.opencontainers.image.created="${BUILD_DATE}" \
       org.opencontainers.image.title="app" \
       org.opencontainers.image.authors="JT Forward" \
