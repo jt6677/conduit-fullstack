@@ -22,12 +22,12 @@ jobs:
       - name: Build Frontend
         run: |-
           cd frontend
-          docker build -t $FRONTEND_IMAGE:lastest .
+          docker build -t $FRONTEND_IMAGE:latest .
 
       - name: Build Backend
         run: |-
           cd backend
-          docker build -t $BACKEND_IMAGE:lastest .
+          docker build -t $BACKEND_IMAGE:latest .
 
       - name: Configure Docker Client
         run: |-
