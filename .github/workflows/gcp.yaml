@@ -26,7 +26,6 @@ jobs:
 
       - name: Build Backend
         run: |-
-          cd ..
           cd backend
           docker build -t $BACKEND_IMAGE:lastest .
 
