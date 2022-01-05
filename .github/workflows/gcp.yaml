@@ -37,12 +37,8 @@ jobs:
         env:
           GIT_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
         run: |-
-          docker tag $FRONTEND_IMAGE:latest gcr.io/$PROJECT_ID/$FRONTEND_IMAGE:latest
-          docker tag $FRONTEND_IMAGE:latest gcr.io/$PROJECT_ID/$FRONTEND_IMAGE:$GIT_TAG
+          docker tag $FRONTEND_IMAGE:latest gcr.io/$PROJECT_ID/$FRONTEND_IMAGE
           docker push gcr.io/$PROJECT_ID/$FRONTEND_IMAGE:latest
-          docker push gcr.io/$PROJECT_ID/$FRONTEND_IMAGE:$GIT_TAG
 
-          docker tag $BACKEND_IMAGE:latest gcr.io/$PROJECT_ID/$BACKEND_IMAGE:latest
-          docker tag $BACKEND_IMAGE:latest gcr.io/$PROJECT_ID/$BACKEND_IMAGE:$GIT_TAG
+          docker tag $BACKEND_IMAGE:latest gcr.io/$PROJECT_ID/$BACKEND_IMAGE
           docker push gcr.io/$PROJECT_ID/$BACKEND_IMAGE:latest
-          docker push gcr.io/$PROJECT_ID/$BACKEND_IMAGE:$GIT_TAG
