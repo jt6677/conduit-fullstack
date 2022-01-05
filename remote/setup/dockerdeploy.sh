@@ -1,7 +1,7 @@
 #!/bin/bash
 DB_NAME=conduit
 DB_USER=postgres
-FRONTEND_IMG_URL=gcr.io/caramel-hallway-333402/backend:latest
+FRONTEND_IMG_URL=gcr.io/caramel-hallway-333402/frontend:latest
 BACKEND_IMG_URL=gcr.io/caramel-hallway-333402/backend:latest
 # Prompt to enter a password for the PostgreSQL greenlight user (rather than hard-coding
 # a password in this script).
@@ -16,21 +16,21 @@ apt-get install \
     ca-certificates \
     curl \
     gnupg \
-    lsb-release
+    lsb-release --yes
 
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg --yes| sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg --yes
 
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 #install docker
-apt-get update
-apt-get install docker-ce docker-ce-cli containerd.io 
+apt-get update --yes
+apt-get install docker-ce docker-ce-cli containerd.io --yes 
 
 #install psql image
 #create volume
-docker create pgdata 
+docker create volume pgdata 
 #run psql image
 docker run -p 5432:5432 -d \
     -e POSTGRES_PASSWORD='${DB_PASSWORD}'\
@@ -41,12 +41,15 @@ docker run -p 5432:5432 -d \
 
 # Install Caddy (see https://caddyserver.com/docs/install#debian-ubuntu-raspbian).
 apt --yes install -y debian-keyring debian-archive-keyring apt-transport-https
-curl -L https://dl.cloudsmith.io/public/caddy/stable/gpg.key | sudo apt-key add -
-curl -L https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt | sudo tee -a /etc/apt/sources.list.d/caddy-stable.list
-apt update
+curl -L --yes https://dl.cloudsmith.io/public/caddy/stable/gpg.key | sudo apt-key --yes add - 
+curl -L https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt | sudo tee -a /etc/apt/sources.list.d/caddy-stable.list --yes
+apt update --yes
 apt --yes install caddy
 
-docker pull ${FRONTEND_IMG_URL}
-docker pull ${BACKEND_IMG_URL}
-echo "Script complete! Rebooting..."
-reboot
+#add google container registry credentials 
+cd setup
+cat keyfile.json | docker login -u _json_key --password-stdin https://gcr.io
+docker run -d -p 3000:3000  ${FRONTEND_IMG_URL}
+docker run -d -p 8080:8080  ${BACKEND_IMG_URL}
+# echo "Script complete! Rebooting..."
+# reboot

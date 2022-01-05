@@ -49,7 +49,7 @@ func run(log *log.Logger) error {
 			User       string `conf:"default:postgres"`
 			Password   string `conf:"default:postgres,noprint"`
 			Host       string `conf:"default:localhost"`
-			Name       string `conf:"default:postgres"`
+			Name       string `conf:"default:conduit"`
 			DisableTLS bool   `conf:"default:true"`
 		}
 		Zipkin struct {

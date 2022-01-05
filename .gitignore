@@ -23,7 +23,7 @@ _testmain.go
 *.exe
 *.test
 *.prof
-
+keyfile.json
 # WebStorm
 *.iml
 

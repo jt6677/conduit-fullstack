@@ -42,9 +42,9 @@ deploy-all:
 deploy-script:
 	rsync -rP --delete ./remote/setup -e "ssh -i ${SSHKEYLOCATION}" root@${REMOTE_IP}:/root
 	ssh -i ${SSHKEYLOCATION} -t root@${REMOTE_IP} '\
-		vim /root/setup/01.sh +"set ff=unix" +wq \
-		chmod +x /root/setup/01.sh \
-		&& bash /root/setup/01.sh \
+		vim /root/setup/dockerdeploy.sh +"set ff=unix" +wq \
+		chmod +x /root/setup/dockerdeploy.sh \
+		&& bash /root/setup/dockerdeploy.sh\
 	'
 # ==============================================================================
 #Deploy Go api to remote

@@ -11,7 +11,5 @@ homebh.ga/api/* {
  }
 
 homebh.ga {
-  root * /etc/www/frontend/dist
-  try_files {path} /index.html
-  file_server
+ reverse_proxy localhost:3000
 }
