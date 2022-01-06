@@ -29,7 +29,6 @@ export default function Article(_: RouteProps): JSX.Element | null {
   React.useEffect(() => {
     dispatch({ type: ArticleActionType.FETCH_ARTICLE_BEGIN })
     let ignore = false
-
     const getArticlewithComments = async () => {
       try {
         const articleData = await fetchArticle(slug)

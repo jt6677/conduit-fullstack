@@ -31,17 +31,20 @@ export function ArticlesProvider(props: React.PropsWithChildren<any>): JSX.Eleme
   const [state, dispatch] = useReducer(articlesReducer, initialState)
   const { authAxios } = useFetch()
   function fetchArticle(slug: string): Promise<IArticle> {
+    // console.log('object', slug)
+    // const url = `/articles/${slug}`
     return authAxios.get<IArticle>(`/article/${slug}`).then((response) => response.data)
+    // return authAxios.get<IArticle>(`article/${slug}`).then((response) => response.data)
   }
   function fetchAllArticles(): Promise<IArticle[]> {
     return authAxios
-      .get<Array<IArticle>>('articles/all')
+      .get<Array<IArticle>>('/articles/all')
       .then((response) => response.data)
   }
 
   function fetchMyArticles(): Promise<IArticle[]> {
     return authAxios
-      .get<Array<IArticle>>('articles/myfeed')
+      .get<Array<IArticle>>('/articles/myfeed')
       .then((response) => response.data)
   }
   function postArticle(data: any): Promise<string> {

@@ -22,7 +22,7 @@ export default function Editor(_: RouteProps) {
   const { slug } = useParams<{ slug: string }>()
   const { fetchArticle, deleteArticle, postArticle, updateArticle } = useArticles()
   const [loading, setLoading] = React.useState(false)
-  const [isSuccess, setIsSuccess] = React.useState<string | null>()
+  const [isSuccess, setIsSuccess] = React.useState<string | null>(null)
   const [isError, setIsError] = React.useState<string | null>()
   const [redirectOnLogin, setRedirectOnLogin] = React.useState(false)
 

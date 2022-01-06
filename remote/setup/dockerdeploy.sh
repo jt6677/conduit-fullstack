@@ -32,12 +32,18 @@ apt-get install docker-ce docker-ce-cli containerd.io --yes
 #create volume
 docker create volume pgdata 
 #run psql image
-docker run -p 5432:5432 -d \
-    -e POSTGRES_PASSWORD='${DB_PASSWORD}'\
-    -e POSTGRES_USER='${DB_USER}'\
-    -e POSTGRES_DB='${DB_NAME}' \
-    -v pgdata:/var/lib/postgresql/data \
-    postgres
+# docker run -p 5432:5432 -d \
+#     -e POSTGRES_PASSWORD=postgres \
+#     -e POSTGRES_USER=postgres \
+#     -e POSTGRES_DB=postgres \
+#     -v pgdata:/var/lib/postgresql/data \
+#     postgres
+# docker run -p 5432:5432 -d \
+#     -e POSTGRES_PASSWORD='${DB_PASSWORD}'\
+#     -e POSTGRES_USER='${DB_USER}'\
+#     -e POSTGRES_DB='${DB_NAME}' \
+#     -v pgdata:/var/lib/postgresql/data \
+#     postgres
 
 # Install Caddy (see https://caddyserver.com/docs/install#debian-ubuntu-raspbian).
 apt --yes install -y debian-keyring debian-archive-keyring apt-transport-https
@@ -51,5 +57,3 @@ cd setup
 cat keyfile.json | docker login -u _json_key --password-stdin https://gcr.io
 docker run -d -p 3000:3000  ${FRONTEND_IMG_URL}
 docker run -d -p 8080:8080  ${BACKEND_IMG_URL}
-# echo "Script complete! Rebooting..."
-# reboot

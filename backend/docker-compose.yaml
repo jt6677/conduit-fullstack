@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+  app_db:
+    container_name: app_db
+    image: postgres:14-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - 5432:5432      
+    volumes:
+      - test_db:/var/lib/postgresql/data  
+
+  app-api:
+    container_name: app-api
+    build: .
+    restart: always
+    ports:
+      - 8080:8080 # CRUD API
+      - 8081:8081 # DEBUG API
+    depends_on:
+      - app_db
+
+volumes:
+  test_db:

@@ -66,7 +66,7 @@ func API(build string, csrfAuthKey string, shutdown chan os.Signal, db *sqlx.DB,
 	app.HandleSubRouter(api, http.MethodPost, "/articles", ag.insertArticle, mid.Authenticate(a))
 	app.HandleSubRouter(api, http.MethodDelete, "/article/{slug}", ag.deleteArticle, mid.Authenticate(a))
 	app.HandleSubRouter(api, http.MethodPut, "/article/{slug}", ag.updateArticle, mid.Authenticate(a))
-	app.HandleSubRouter(api, http.MethodGet, "/article/{slug:[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$}", ag.queryArticleWithSlug, mid.Authenticate(a))
+	app.HandleSubRouter(api, http.MethodGet, "/article/{slug}", ag.queryArticleWithSlug, mid.Authenticate(a))
 	app.HandleSubRouter(api, http.MethodPost, "/article/{slug}/favorite", ag.favorite, mid.Authenticate(a))
 	app.HandleSubRouter(api, http.MethodDelete, "/article/{slug}/unfavorite", ag.unfavorite, mid.Authenticate(a))
 	app.HandleSubRouter(api, http.MethodGet, "/articles/all", ag.queryArticles, mid.Authenticate(a))

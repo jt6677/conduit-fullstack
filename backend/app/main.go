@@ -48,8 +48,8 @@ func run(log *log.Logger) error {
 		DB struct {
 			User       string `conf:"default:postgres"`
 			Password   string `conf:"default:postgres,noprint"`
-			Host       string `conf:"default:0.0.0.0"`
-			Name       string `conf:"default:conduit"`
+			Host       string `conf:"default:app_db"`
+			Name       string `conf:"default:postgres"`
 			DisableTLS bool   `conf:"default:true"`
 		}
 		Zipkin struct {

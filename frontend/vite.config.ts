@@ -15,10 +15,10 @@ export default defineConfig({
   server: {
     // port: 1000,
     proxy: {
-      // '/': 'https://homebg.ga/',
-      // '/api': 'https://homebg.ga/api',
-      // '/api': 'http://localhost:8081',
-      '/api': 'http://localhost:8080',
+    //   // '/': 'https://homebg.ga/',
+      '/api': 'https://homebg.ga/api',
+    //   // '/api': 'http://localhost:8081',
+    //   '/api': 'http://localhost:8080',
     },
   },
 })

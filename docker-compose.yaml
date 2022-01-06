@@ -1,0 +1,56 @@
+version: '3.7'
+
+services:
+  app_db:
+    container_name: app_db
+    image: postgres:14-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - 5432:5432      
+    volumes:
+      - dbdata:/var/lib/postgresql/data  
+
+  app-api:
+    container_name: app-api
+    build: ./backend
+    restart: always
+    ports:
+      - 8080:8080 # CRUD API
+      - 8081:8081 # DEBUG API
+    depends_on:
+      - app_db
+
+  frontend:
+    container_name: frontend
+    build: ./frontend
+    # image: realworld-conduite-ts-tailwindvite_frontend
+    volumes:
+      - frontend_file:/frontend/dist
+    # restart: always  
+    # ports:
+      # - 81:80 # EXPOSE TO EXTERNAL
+    # depends_on:
+    #   - app-api
+      # - caddy
+
+  caddy:
+    container_name: caddy    
+    image: caddy:2.4.6-alpine
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - frontend  
+      - app-api  
+    volumes:
+    - $PWD/remote/production/Caddyfile:/etc/caddy/Caddyfile
+    - frontend_file:/etc/www/frontend/dist
+volumes:
+  dbdata:
+  frontend_file:
+
