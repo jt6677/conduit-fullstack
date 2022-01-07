@@ -4,7 +4,7 @@ services:
   app_db:
     container_name: app_db
     image: postgres:14-alpine
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -17,7 +17,7 @@ services:
   app-api:
     container_name: app-api
     image: gcr.io/caramel-hallway-333402/backend
-    restart: always
+    restart: unless-stopped
     ports:
       - 8080:8080 # CRUD API
       - 8081:8081 # DEBUG API
@@ -29,17 +29,12 @@ services:
     image: gcr.io/caramel-hallway-333402/frontend
     volumes:
       - frontend_file:/frontend/dist
-    # restart: always  
-    # ports:
-      # - 81:80 # EXPOSE TO EXTERNAL
-    # depends_on:
-    #   - app-api
-      # - caddy
+
 
   caddy:
     container_name: caddy    
-    image: caddy:2.4.6-alpine
-    restart: always
+    image: caddy:alpine
+    restart: unless-stopped
     ports:
       - 80:80
       - 443:443
@@ -49,8 +44,12 @@ services:
     volumes:
     - ./Caddyfile:/etc/caddy/Caddyfile
     - frontend_file:/etc/www/frontend/dist
+    - caddy_data:/data
+    - caddy_config:/config
 
 volumes:
   dbdata:
   frontend_file:
+  caddy_data:
+  caddy_config:
 

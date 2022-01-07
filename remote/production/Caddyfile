@@ -4,11 +4,11 @@
   email jtforward2020@gmail.com
 }
 
-homebh.ga/api/* {
-  reverse_proxy localhost:8080
+homebh.tk/api/* {
+  reverse_proxy app-api:8080
  }
 
-homebh.ga {
+homebh.tk {
   root * /etc/www/frontend/dist
   try_files {path} /index.html
   file_server

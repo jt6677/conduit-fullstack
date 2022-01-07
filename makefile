@@ -19,48 +19,38 @@ include .envrc
 .PHONY:ssh-root
 ssh-root:
 	ssh -i ${SSHKEYLOCATION} root@${REMOTE_IP}
-#One command to deploy from scratch
-.PHONY:deploy-all
-deploy-all:
-	@echo "deploy-script"
-	make deploy-script
-	@echo "deploy-backend"
-	make deploy-backend
-	@echo "deploy-frontend"
-	make deploy-frontend
-	@echo "deploy-api.service"
-	make deploy-api.service
-	@echo "deploy-caddyfile"
-	make deploy-caddyfile
 
-#Upload script to Remote
-#Exectue script
-#Saving script as unix first
-#Gaining permission to execute
-#Execute script
+#upload all scripts and files to remote
+.PHONY:deploy-all-script
+deploy-all-script:
+	rsync -rP --delete ./remote/ -e "ssh -i ${SSHKEYLOCATION}" root@${REMOTE_IP}:/root/remote
+
+#execute dockerdeploy.sh to install docker and docker-compose
 .PHONY:deploy-setup
 deploy-setup:
-	rsync -rP --delete ./remote/setup/ -e "ssh -i ${SSHKEYLOCATION}" root@${REMOTE_IP}:/root/setup
 	ssh -i ${SSHKEYLOCATION} -t root@${REMOTE_IP} '\
-		vim /root/setup/dockerdeploy.sh +"set ff=unix" +wq \
-		chmod +x /root/setup/dockerdeploy.sh \
-		&& bash /root/setup/dockerdeploy.sh\
+		vim /root/remote/setup/dockerdeploy.sh +"set ff=unix" +wq \
+		chmod +x /root/remote/setup/dockerdeploy.sh \
+		&& bash /root/remote/setup/dockerdeploy.sh\
 	'
+#run docker-compose
 .PHONY:deploy-production
 deploy-production:
-	rsync -rP --delete ./remote/production/ -e "ssh -i ${SSHKEYLOCATION}" root@${REMOTE_IP}:/root/production
 	ssh -i ${SSHKEYLOCATION} -t root@${REMOTE_IP} '\
-		cd production && docker-compose up  \
+		cd /remote/production && docker-compose up -d \
+	'
+#update containers
+#delete old containers
+#pull new containers
+#run new containers
+.PHONY:update-containers
+update-containers:
+	ssh -i ${SSHKEYLOCATION} -t  root@${REMOTE_IP} '\
+	vim /root/remote/setup/updatecontainers.sh +"set ff=unix" +wq \
+		chmod +x /root/remote/setup/updatecontainers.sh \
+		&& bash /root/remote/setup/updatecontainers.sh\
 	'
 
-#Deploy Caddyfile
-.PHONY:deploy-caddyfile
-deploy-caddyfile:
-	rsync -P ./remote/production/Caddyfile -e "ssh -i ${SSHKEYLOCATION}" root@${REMOTE_IP}:~
-	ssh -i ${SSHKEYLOCATION} -t root@${REMOTE_IP} '\
-		sudo mv ~/Caddyfile /etc/caddy/ \
-		&& sudo systemctl reload caddy \
-	'
 # ==============================================================================
 # Building system
 ##backend Golang tidy
