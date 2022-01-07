@@ -1,4 +1,3 @@
-#local dev 
 version: '3.7'
 
 services:
@@ -17,7 +16,7 @@ services:
 
   app-api:
     container_name: app-api
-    build: ./backend
+    image: gcr.io/caramel-hallway-333402/backend
     restart: always
     ports:
       - 8080:8080 # CRUD API
@@ -27,8 +26,7 @@ services:
 
   frontend:
     container_name: frontend
-    build: ./frontend
-    # image: realworld-conduite-ts-tailwindvite_frontend
+    image: gcr.io/caramel-hallway-333402/frontend
     volumes:
       - frontend_file:/frontend/dist
     # restart: always  
@@ -49,8 +47,9 @@ services:
       - frontend  
       - app-api  
     volumes:
-    - $PWD/remote/production/Caddyfile:/etc/caddy/Caddyfile
+    - ./Caddyfile:/etc/caddy/Caddyfile
     - frontend_file:/etc/www/frontend/dist
+
 volumes:
   dbdata:
   frontend_file:

@@ -38,48 +38,21 @@ deploy-all:
 #Saving script as unix first
 #Gaining permission to execute
 #Execute script
-.PHONY:deploy-script
-deploy-script:
-	rsync -rP --delete ./remote/setup -e "ssh -i ${SSHKEYLOCATION}" root@${REMOTE_IP}:/root
+.PHONY:deploy-setup
+deploy-setup:
+	rsync -rP --delete ./remote/setup/ -e "ssh -i ${SSHKEYLOCATION}" root@${REMOTE_IP}:/root/setup
 	ssh -i ${SSHKEYLOCATION} -t root@${REMOTE_IP} '\
 		vim /root/setup/dockerdeploy.sh +"set ff=unix" +wq \
 		chmod +x /root/setup/dockerdeploy.sh \
 		&& bash /root/setup/dockerdeploy.sh\
 	'
-# ==============================================================================
-#Deploy Go api to remote
-.PHONY:deploy-backend
-deploy-backend:
-	@echo "building Go binary "
-	make build-backend
-	@echo "make remote folder"
-	ssh -i ${SSHKEYLOCATION} root@${REMOTE_IP} mkdir -p /etc/www/backend/
-	@echo "copying Go from local to server"
-	rsync -rP --delete ./backend/app/bin/api -e "ssh -i ${SSHKEYLOCATION}" root@${REMOTE_IP}:/etc/www/backend/
-	@echo "gaining permission to api binary"
-	ssh -i ${SSHKEYLOCATION} -t root@${REMOTE_IP}	'\
-	chmod u+x /etc/www/backend/api \
-	'
-
-#Deploy React frontend to remote
-.PHONY:deploy-frontend
-deploy-frontend:
-	@echo "building frontend"
-	make build-frontend
-	@echo "make remote folder"
-	ssh -i ${SSHKEYLOCATION} root@${REMOTE_IP} mkdir -p /etc/www/frontend
-	@echo "copying React from local to server"
-	rsync -rP --delete ./frontend/dist -e "ssh -i ${SSHKEYLOCATION}" root@${REMOTE_IP}:/etc/www/frontend
-
-#Upload api.service and make it run in background
-.PHONY:deploy-api.service
-deploy-api.service:
-	rsync -P ./remote/production/api.service -e "ssh -i ${SSHKEYLOCATION}" root@${REMOTE_IP}:~
+.PHONY:deploy-production
+deploy-production:
+	rsync -rP --delete ./remote/production/ -e "ssh -i ${SSHKEYLOCATION}" root@${REMOTE_IP}:/root/production
 	ssh -i ${SSHKEYLOCATION} -t root@${REMOTE_IP} '\
-		sudo mv ~/api.service /etc/systemd/system/ \
-		&& sudo systemctl enable api \
-		&& sudo systemctl restart api \
+		cd production && docker-compose up  \
 	'
+
 #Deploy Caddyfile
 .PHONY:deploy-caddyfile
 deploy-caddyfile:
